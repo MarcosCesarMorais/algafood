@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+  mysqlserver:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "090511"
+      MYSQL_DATABASE: "mcm-food"
+    ports:
+      - "3306:3306"
+    volumes:
+      - /home/morais/workspace/DataBase/volumes/MySQL:/var/lib/mysql
+    networks:
+      - mcm-network
+      
+networks:
+  mcm-network:
+    driver: bridge
