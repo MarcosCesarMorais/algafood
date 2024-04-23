@@ -1,23 +1,16 @@
 package br.com.mcm.apimcmfood.domain.model;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_restaurante")
-public class Restaurante {
+@Table(name="tb_estado")
+public class Estado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String nome;
-    @Column(name = "taxa_frete",nullable = false)
-    private BigDecimal taxaFrete;
-    @ManyToOne
-    @JoinColumn(name="cozinha_id",nullable = false)
-    private Cozinha cozinha;
 
     public Long getId() {
         return id;
@@ -35,28 +28,12 @@ public class Restaurante {
         this.nome = nome;
     }
 
-    public BigDecimal getTaxaFrete() {
-        return taxaFrete;
-    }
-
-    public void setTaxaFrete(BigDecimal taxaFrete) {
-        this.taxaFrete = taxaFrete;
-    }
-
-    public Cozinha getCozinha() {
-        return cozinha;
-    }
-
-    public void setCozinha(Cozinha cozinha) {
-        this.cozinha = cozinha;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Restaurante that = (Restaurante) o;
-        return Objects.equals(id, that.id);
+        Estado estado = (Estado) o;
+        return Objects.equals(id, estado.id);
     }
 
     @Override
