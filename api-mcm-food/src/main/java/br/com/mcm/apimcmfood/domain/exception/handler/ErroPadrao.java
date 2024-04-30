@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.domain.exception;
+package br.com.mcm.apimcmfood.domain.exception.handler;
 
 import java.io.Serializable;
 

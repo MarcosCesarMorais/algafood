@@ -6,6 +6,8 @@ import br.com.mcm.apimcmfood.domain.service.CozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,27 +18,23 @@ import java.util.Objects;
 @RestController
 @RequestMapping(value = "/cozinhas")
 public class CozinhaController {
-    private CozinhaRepository repository;
     private CozinhaService cozinhaService;
 
     public CozinhaController(
-            final CozinhaRepository repository,
             final CozinhaService cozinhaService
     ) {
-        this.repository = Objects.requireNonNull(repository);
         this.cozinhaService = Objects.requireNonNull(cozinhaService);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-        cozinhaService.adicionar(cozinha);
-        return cozinha;
+        return cozinhaService.adicionar(cozinha);
     }
 
     @GetMapping
-    public List<Cozinha> listar() {
-        return repository.findAll();
+    public Page<Cozinha> listar(Pageable pageable) {
+        return cozinhaService.listar(pageable);
     }
 
     @GetMapping("/{cozinhaId}")
@@ -49,26 +47,11 @@ public class CozinhaController {
             final @PathVariable("cozinhaId") Long id,
             final @RequestBody Cozinha cozinha
     ) {
-        var cozinhaAtual = repository.findById(id);
-        if (cozinhaAtual.isPresent()) {
-            BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
-            repository.save(cozinhaAtual.get());
-            return ResponseEntity.ok(cozinhaAtual.get());
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(cozinhaService.atualizar(id, cozinha));
     }
-
     @DeleteMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> remover(@PathVariable("cozinhaId") Long id) {
-        try {
-            var cozinha = repository.findById(id);
-            if (cozinha.isPresent()) {
-                repository.deleteById(id);
-                return ResponseEntity.noContent().build();
-            }
-            return ResponseEntity.notFound().build();
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
+        this.cozinhaService.remover(id);
+        return ResponseEntity.noContent().build();
     }
 }
