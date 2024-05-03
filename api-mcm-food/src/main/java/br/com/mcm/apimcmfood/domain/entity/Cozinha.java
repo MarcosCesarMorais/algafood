@@ -1,15 +1,14 @@
-package br.com.mcm.apimcmfood.domain.model;
+package br.com.mcm.apimcmfood.domain.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="tb_estado")
-public class Estado {
+@Table(name="tb_cozinha")
+public class Cozinha {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
     private String nome;
 
     public Long getId() {
@@ -32,8 +31,8 @@ public class Estado {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Estado estado = (Estado) o;
-        return Objects.equals(id, estado.id);
+        Cozinha cozinha = (Cozinha) o;
+        return Objects.equals(id, cozinha.id);
     }
 
     @Override

@@ -1,18 +1,16 @@
-package br.com.mcm.apimcmfood.domain.model;
+package br.com.mcm.apimcmfood.domain.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="tb_forma_pagamento")
-public class FormaPagamento {
-
+@Table(name="tb_estado")
+public class Estado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
-    private String descricao;
+    private String nome;
 
     public Long getId() {
         return id;
@@ -22,20 +20,20 @@ public class FormaPagamento {
         this.id = id;
     }
 
-    public String getDescricao() {
-        return descricao;
+    public String getNome() {
+        return nome;
     }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FormaPagamento that = (FormaPagamento) o;
-        return Objects.equals(id, that.id);
+        Estado estado = (Estado) o;
+        return Objects.equals(id, estado.id);
     }
 
     @Override

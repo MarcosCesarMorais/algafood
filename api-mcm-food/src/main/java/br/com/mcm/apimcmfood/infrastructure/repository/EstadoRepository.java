@@ -1,6 +1,6 @@
-package br.com.mcm.apimcmfood.domain.repository;
+package br.com.mcm.apimcmfood.infrastructure.repository;
 
-import br.com.mcm.apimcmfood.domain.model.Estado;
+import br.com.mcm.apimcmfood.domain.entity.Estado;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

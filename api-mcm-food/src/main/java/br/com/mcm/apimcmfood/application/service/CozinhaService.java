@@ -1,16 +1,15 @@
-package br.com.mcm.apimcmfood.domain.service;
+package br.com.mcm.apimcmfood.application.service;
 
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
-import br.com.mcm.apimcmfood.domain.model.Cozinha;
-import br.com.mcm.apimcmfood.domain.repository.CozinhaRepository;
+import br.com.mcm.apimcmfood.domain.entity.Cozinha;
+import br.com.mcm.apimcmfood.infrastructure.repository.CozinhaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Objects;
 
 @Service

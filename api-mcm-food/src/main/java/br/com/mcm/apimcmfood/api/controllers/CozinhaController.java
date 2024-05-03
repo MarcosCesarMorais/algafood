@@ -1,18 +1,13 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
-import br.com.mcm.apimcmfood.domain.model.Cozinha;
-import br.com.mcm.apimcmfood.domain.repository.CozinhaRepository;
-import br.com.mcm.apimcmfood.domain.service.CozinhaService;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import br.com.mcm.apimcmfood.domain.entity.Cozinha;
+import br.com.mcm.apimcmfood.application.service.CozinhaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController

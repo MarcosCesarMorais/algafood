@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.domain.model;
+package br.com.mcm.apimcmfood.domain.entity;
 
 import javax.persistence.*;
 import java.util.Objects;

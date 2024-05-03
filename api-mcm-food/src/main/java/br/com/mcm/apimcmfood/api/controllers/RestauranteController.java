@@ -1,7 +1,7 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
-import br.com.mcm.apimcmfood.domain.model.Restaurante;
-import br.com.mcm.apimcmfood.domain.service.RestauranteService;
+import br.com.mcm.apimcmfood.domain.entity.Restaurante;
+import br.com.mcm.apimcmfood.application.service.RestauranteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

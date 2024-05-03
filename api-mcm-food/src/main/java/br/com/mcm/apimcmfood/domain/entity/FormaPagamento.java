@@ -1,18 +1,15 @@
-package br.com.mcm.apimcmfood.domain.model;
+package br.com.mcm.apimcmfood.domain.entity;
 
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name="tb_permissao")
-public class Permissao {
+@Table(name="tb_forma_pagamento")
+public class FormaPagamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(nullable = false)
-    private String nome;
 
     @Column(nullable = false)
     private String descricao;
@@ -23,14 +20,6 @@ public class Permissao {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
     }
 
     public String getDescricao() {
@@ -45,8 +34,8 @@ public class Permissao {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Permissao permissao = (Permissao) o;
-        return Objects.equals(id, permissao.id);
+        FormaPagamento that = (FormaPagamento) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
