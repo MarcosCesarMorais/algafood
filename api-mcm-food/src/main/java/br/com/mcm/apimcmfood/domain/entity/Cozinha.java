@@ -1,15 +1,24 @@
 package br.com.mcm.apimcmfood.domain.entity;
 
+import br.com.mcm.apimcmfood.infrastructure.repository.spec.RestauranteSpecs;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="tb_cozinha")
+@Table(name = "tb_cozinha")
 public class Cozinha {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "cozinha")
+    private List<Restaurante> restaurantes = new ArrayList<>();
 
     public Long getId() {
         return id;

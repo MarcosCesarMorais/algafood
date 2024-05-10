@@ -30,4 +30,12 @@ insert into tb_cidade (nome, estado_id) values ("Porto Seguro", 4);
 insert into tb_cidade (nome, estado_id) values ("Jacobina", 4);
 insert into tb_cidade (nome, estado_id) values ("Juazeiro", 4);
 
+insert into tb_forma_pagamento (id, descricao) values (1, "Cartão de crédito");
+insert into tb_forma_pagamento (id, descricao) values (2, "Cartão de débito");
+insert into tb_forma_pagamento (id, descricao) values (3, "Dinheiro");
+
+insert into tb_restaurante_forma_pagamento (restaurante_id,forma_pagamento_id) values (1,1),(1,2), (1,3);
+insert into tb_restaurante_forma_pagamento (restaurante_id,forma_pagamento_id) values (2,1),(2,2);
+insert into tb_restaurante_forma_pagamento (restaurante_id,forma_pagamento_id) values (3,3);
+
 

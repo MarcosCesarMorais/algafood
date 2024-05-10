@@ -45,15 +45,6 @@ public class EstadoService {
         return this.estadoRepository.save(estadoAtual);
     }
 
-    public Estado atualizarParcial(final Long id, final Estado estado) {
-        var estadoAtual = estadoRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException(
-                        String.format("Estado com o codigo %d não foi econtrado na base de dados.", id)
-                ));
-        BeanUtils.copyProperties(estado, estadoAtual, "id");
-        return this.estadoRepository.save(estadoAtual);
-    }
-
     public void remover(final Long id) {
         try {
             if (this.estadoRepository.existsById(id)) {

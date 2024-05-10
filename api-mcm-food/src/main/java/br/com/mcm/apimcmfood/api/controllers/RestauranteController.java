@@ -1,5 +1,6 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
+import br.com.mcm.apimcmfood.domain.entity.Estado;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
 import br.com.mcm.apimcmfood.application.service.RestauranteService;
 import org.springframework.data.domain.Page;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -44,6 +46,14 @@ public class RestauranteController {
             final @RequestBody Restaurante restaurante
     ) {
         return ResponseEntity.ok(restauranteService.atualizar(id, restaurante));
+    }
+
+    @PatchMapping("/{restauranteId}")
+    public ResponseEntity<Restaurante> atualizarParcial(
+            final @PathVariable("restauranteId") Long id,
+            final @RequestBody Map<String, Object> campos
+    ){
+        return ResponseEntity.ok(restauranteService.atualizarParcial(id, campos));
     }
 
     @DeleteMapping("/{restauranteId}")

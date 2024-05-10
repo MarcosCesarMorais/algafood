@@ -47,17 +47,6 @@ public class EstadoController {
         return ResponseEntity.ok(estadoService.atualizar(id, estado));
     }
 
-    @PatchMapping("/{estadoId}")
-    public ResponseEntity<Estado> atualizarParcial(
-            final @PathVariable("estadoId") Long id,
-            final @RequestBody Map<String, Object> campos
-    ) {
-        campos.forEach((nomePropriedade, valorPropriedade) ->{
-
-        });
-        return ResponseEntity.ok(estadoService.atualizarParcial(id, estado));
-    }
-
     @DeleteMapping("/{estadoId}")
     public ResponseEntity<?> remover (final @PathVariable("estadoId")Long id){
         this.estadoService.remover(id);
