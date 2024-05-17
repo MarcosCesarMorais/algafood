@@ -17,6 +17,12 @@ public class EstadoService {
 
     private EstadoRepository estadoRepository;
 
+    private static final String MSG_ESTADO_EM_USO  =
+            "Estado de código %d não pode ser removido, pois está em uso";
+
+    private static final String MSG_ESTADO_NAO_ENCONTRADO =
+            "Não existe um cadastro de estado com código %d";
+
     public EstadoService(final EstadoRepository estadoRepository) {
         this.estadoRepository = Objects.requireNonNull(estadoRepository);
     }
@@ -28,7 +34,7 @@ public class EstadoService {
     public Estado buscar(final Long id) {
         return estadoRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
-                        String.format("Estado com o codigo %d não foi econtrado na base de dados", id)
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
                 ));
     }
 
@@ -39,7 +45,7 @@ public class EstadoService {
     public Estado atualizar(final Long id, final Estado estado) {
         var estadoAtual = estadoRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
-                        String.format("Estado com o codigo %d não foi econtrado na base de dados.", id)
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
                 ));
         BeanUtils.copyProperties(estado, estadoAtual, "id");
         return this.estadoRepository.save(estadoAtual);
@@ -51,12 +57,16 @@ public class EstadoService {
                 this.estadoRepository.deleteById(id);
             } else {
                 throw new EntidadeNaoEncontradaException(
-                        String.format("Estado com o codigo %d não foi econtrado na base de dados.", id));
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id));
             }
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
-                    String.format("Não foi possível remover o estado com o código %d na base de dados devido à associação com uma ou mais cidades.", id));
+                    String.format(MSG_ESTADO_EM_USO, id));
 
         }
+    }
+
+    public Boolean existe(Long id){
+        return this.estadoRepository.existsById(id);
     }
 }

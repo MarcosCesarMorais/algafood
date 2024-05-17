@@ -2,6 +2,7 @@ package br.com.mcm.apimcmfood.application.service;
 
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
+import br.com.mcm.apimcmfood.domain.exception.ValidaSubClasseException;
 import br.com.mcm.apimcmfood.infrastructure.repository.RestauranteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.util.Reflection;
@@ -13,37 +14,52 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 @Service
 public class RestauranteService {
 
     private RestauranteRepository restauranteRepository;
+    private CozinhaService cozinhaService;
+
+    private static final String MSG_RESTAURANTE_NAO_ENCONTRADO
+            = "Não existe um cadastro de restaurante com código %d";
 
     public RestauranteService(
-            final RestauranteRepository restauranteRepository
+            final RestauranteRepository restauranteRepository,
+            final CozinhaService cozinhaService
     ) {
         this.restauranteRepository = Objects.requireNonNull(restauranteRepository);
+        this.cozinhaService = Objects.requireNonNull(cozinhaService);
     }
 
     public Restaurante adicionar(final Restaurante restaurante) {
-        return restauranteRepository.save(restaurante);
+        var cozinhaId = restaurante.getCozinha().getId();
+        var cozinhaAtual = cozinhaService.buscar(cozinhaId);
+        if(cozinhaAtual != null){
+            restaurante.setCozinha(cozinhaAtual);
+            return this.restauranteRepository.save(restaurante);
+        } else{
+            throw new ValidaSubClasseException(
+                    String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, cozinhaId));
+        }
     }
 
     public Restaurante buscar(final Long id) {
         return restauranteRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
-                        String.format("Não foi possível encontrar um restaurante com o código %d na base de dados.", id)));
+                        String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
     }
 
-    public Page<Restaurante> listar(final Pageable pageable) {
-        return restauranteRepository.findAll(pageable);
+    public List<Restaurante> listar() {
+        return restauranteRepository.findAll();
     }
 
     public Restaurante atualizar(Long id, Restaurante restaurante) {
         var restauranteAtual = restauranteRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
-                        String.format("Não foi possível encontrar um restaurante com o código %d na base de dados.", id)));
+                        String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
         BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
         return this.restauranteRepository.save(restauranteAtual);
     }
@@ -51,7 +67,7 @@ public class RestauranteService {
     public Restaurante atualizarParcial(Long id, Map<String, Object> campos){
         var restauranteAtual = restauranteRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
-                        String.format("Não foi possível encontrar um restaurante com o código %d na base de dados.", id)));
+                        String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
         merge(campos, restauranteAtual);
         return this.restauranteRepository.save(restauranteAtual);
     }
@@ -61,7 +77,7 @@ public class RestauranteService {
             this.restauranteRepository.deleteById(id);
         } else {
             throw new EntidadeNaoEncontradaException(
-                    String.format("Não foi possível encontrar um restaurante com o código %d na base de dados.", id));
+                    String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id));
         }
     }
 

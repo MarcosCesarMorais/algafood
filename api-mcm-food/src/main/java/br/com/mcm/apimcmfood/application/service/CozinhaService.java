@@ -17,6 +17,12 @@ public class CozinhaService {
 
     private CozinhaRepository cozinhaRepository;
 
+    private static final String MSG_COZINHA_NAO_ENCONTRADA =
+            "Não existe um cadastro de cozinha com código %d";
+    private static final String MSG_COZINHA_EM_USO  =
+            "Não é possível remover a cozinha com o código %d, pois está associada a um ou mais restaurantes.";
+
+
     public CozinhaService(
             final CozinhaRepository cozinhaRepository
     ) {
@@ -30,7 +36,7 @@ public class CozinhaService {
     public Cozinha buscar(Long id) {
         return cozinhaRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
-                        String.format("Cozinha de código %d não foi encontrada na base de dados", id))
+                        String.format(MSG_COZINHA_NAO_ENCONTRADA, id))
         );
     }
 
@@ -41,11 +47,10 @@ public class CozinhaService {
     public Cozinha atualizar(Long id, Cozinha cozinha) {
         var cozinhaAtual = cozinhaRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
-                        String.format("Não foi possível encontrar uma cozinha com o código %d na base de dados.", id)));
+                        String.format(MSG_COZINHA_NAO_ENCONTRADA, id)));
         BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
         return this.cozinhaRepository.save(cozinhaAtual);
     }
-
 
     public void remover(final Long id) {
         try {
@@ -53,11 +58,11 @@ public class CozinhaService {
                 this.cozinhaRepository.deleteById(id);
             } else {
                 throw new EntidadeNaoEncontradaException(
-                        String.format("Não foi possível encontrar uma cozinha com o código %d na base de dados.", id));
+                        String.format(MSG_COZINHA_NAO_ENCONTRADA, id));
             }
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
-                    String.format("Não é possível remover a cozinha com o código %d devido à associação com um ou mais restaurantes.", id));
+                    String.format(MSG_COZINHA_EM_USO, id));
         }
     }
 }

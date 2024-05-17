@@ -1,10 +1,10 @@
 package br.com.mcm.apimcmfood.domain.exception;
 
-public class EntidadeNaoEncontradaException extends SemStacktraceException{
+public class EntidadeJaExisteException extends RuntimeException{
 
     private static final long serialVersionUID = 1L;
 
-    public EntidadeNaoEncontradaException(String mensagem){
+    public EntidadeJaExisteException(String mensagem){
         super(mensagem);
     }
 }
