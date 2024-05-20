@@ -4,12 +4,10 @@ import br.com.mcm.apimcmfood.domain.entity.Cidade;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeJaExisteException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
-import br.com.mcm.apimcmfood.domain.exception.ValidaSubClasseException;
+import br.com.mcm.apimcmfood.domain.exception.NegocioException;
 import br.com.mcm.apimcmfood.infrastructure.repository.CidadeRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,7 +45,7 @@ public class CidadeService {
             cidade.setEstado(estadoAtual);
             return cidadeRepository.save(cidade);
         } else {
-            throw new ValidaSubClasseException(
+            throw new NegocioException(
                     String.format(MSG_ESTADO_NAO_ENCONTRADA, cidade.getEstado().getId()));
         }
 

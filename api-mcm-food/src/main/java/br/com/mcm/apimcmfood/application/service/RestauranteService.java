@@ -2,14 +2,10 @@ package br.com.mcm.apimcmfood.application.service;
 
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
-import br.com.mcm.apimcmfood.domain.exception.ValidaSubClasseException;
+import br.com.mcm.apimcmfood.domain.exception.NegocioException;
 import br.com.mcm.apimcmfood.infrastructure.repository.RestauranteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.aspectj.util.Reflection;
-import org.aspectj.weaver.reflect.ReflectionShadow;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -26,6 +22,9 @@ public class RestauranteService {
     private static final String MSG_RESTAURANTE_NAO_ENCONTRADO
             = "Não existe um cadastro de restaurante com código %d";
 
+    private static final String MSG_RESTAURANTE_COZINHA_INVALIDA
+            = "Cozinha com código %d não existe, favor informar uma cozinha válida";
+
     public RestauranteService(
             final RestauranteRepository restauranteRepository,
             final CozinhaService cozinhaService
@@ -36,13 +35,13 @@ public class RestauranteService {
 
     public Restaurante adicionar(final Restaurante restaurante) {
         var cozinhaId = restaurante.getCozinha().getId();
-        var cozinhaAtual = cozinhaService.buscar(cozinhaId);
-        if(cozinhaAtual != null){
+        try{
+            var cozinhaAtual = cozinhaService.buscar(cozinhaId);
             restaurante.setCozinha(cozinhaAtual);
             return this.restauranteRepository.save(restaurante);
-        } else{
-            throw new ValidaSubClasseException(
-                    String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, cozinhaId));
+        }catch(EntidadeNaoEncontradaException e){
+            throw new NegocioException(
+                    String.format(MSG_RESTAURANTE_COZINHA_INVALIDA, cozinhaId));
         }
     }
 
