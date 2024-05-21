@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +39,9 @@ public class RestauranteController {
 
     @GetMapping("/{restauranteId}")
     public ResponseEntity<Restaurante> buscar(@PathVariable("restauranteId") Long id) {
+        if(true){
+            throw new IllegalArgumentException("teste");
+        }
         return ResponseEntity.ok(restauranteService.buscar(id));
     }
 
@@ -52,9 +56,10 @@ public class RestauranteController {
     @PatchMapping("/{restauranteId}")
     public ResponseEntity<Restaurante> atualizarParcial(
             final @PathVariable("restauranteId") Long id,
-            final @RequestBody Map<String, Object> campos
+            final @RequestBody Map<String, Object> campos,
+            HttpServletRequest request
     ){
-        return ResponseEntity.ok(restauranteService.atualizarParcial(id, campos));
+        return ResponseEntity.ok(restauranteService.atualizarParcial(id, campos, request));
     }
 
     @DeleteMapping("/{restauranteId}")

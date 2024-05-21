@@ -5,7 +5,7 @@ services:
     image: mysql
     environment:
       MYSQL_ROOT_PASSWORD: "090511"
-      MYSQL_DATABASE: "mcm-food"
+      MYSQL_DATABASE: "mcm-food-dev"
     ports:
       - "3306:3306"
     volumes:

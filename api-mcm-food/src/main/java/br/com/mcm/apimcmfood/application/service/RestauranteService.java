@@ -4,15 +4,21 @@ import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
 import br.com.mcm.apimcmfood.domain.exception.NegocioException;
 import br.com.mcm.apimcmfood.infrastructure.repository.RestauranteRepository;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 @Service
 public class RestauranteService {
 
@@ -35,11 +41,11 @@ public class RestauranteService {
 
     public Restaurante adicionar(final Restaurante restaurante) {
         var cozinhaId = restaurante.getCozinha().getId();
-        try{
+        try {
             var cozinhaAtual = cozinhaService.buscar(cozinhaId);
             restaurante.setCozinha(cozinhaAtual);
             return this.restauranteRepository.save(restaurante);
-        }catch(EntidadeNaoEncontradaException e){
+        } catch (EntidadeNaoEncontradaException e) {
             throw new NegocioException(
                     String.format(MSG_RESTAURANTE_COZINHA_INVALIDA, cozinhaId));
         }
@@ -63,11 +69,15 @@ public class RestauranteService {
         return this.restauranteRepository.save(restauranteAtual);
     }
 
-    public Restaurante atualizarParcial(Long id, Map<String, Object> campos){
+    public Restaurante atualizarParcial(
+            Long id,
+            Map<String, Object> campos,
+            HttpServletRequest request
+    ) {
         var restauranteAtual = restauranteRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
                         String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
-        merge(campos, restauranteAtual);
+        merge(campos, restauranteAtual, request);
         return this.restauranteRepository.save(restauranteAtual);
     }
 
@@ -80,14 +90,27 @@ public class RestauranteService {
         }
     }
 
-    private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino){
-        ObjectMapper objectMapper = new ObjectMapper();
-        Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
-        dadosOrigem.forEach((nomePropriedade, valorPropriedade)->{
-            Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
-            field.setAccessible(true);
-            Object valorAtualizado = ReflectionUtils.getField(field, restauranteOrigem);
-            ReflectionUtils.setField(field, restauranteDestino, valorAtualizado);
-        });
+    private void merge(
+            Map<String, Object> dadosOrigem,
+            Restaurante restauranteDestino,
+            HttpServletRequest request
+    ) {
+        ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
+            Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
+
+            dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
+                        Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
+                        field.setAccessible(true);
+                        Object valorAtualizado = ReflectionUtils.getField(field, restauranteOrigem);
+                        ReflectionUtils.setField(field, restauranteDestino, valorAtualizado);
+                    }
+            );
+        } catch (IllegalArgumentException e) {
+            Throwable rootCause = ExceptionUtils.getRootCause(e);
+            throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
+        }
     }
 }
