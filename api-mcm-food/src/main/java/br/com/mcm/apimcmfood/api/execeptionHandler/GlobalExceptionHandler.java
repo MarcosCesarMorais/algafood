@@ -5,14 +5,19 @@ import br.com.mcm.apimcmfood.domain.exception.EntidadeJaExisteException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.domain.exception.NegocioException;
 import br.com.mcm.apimcmfood.domain.exception.handler.ErroPadrao;
+import br.com.mcm.apimcmfood.domain.exception.handler.Field;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -26,6 +31,29 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+    @Autowired
+    private MessageSource messageSource;
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ){
+        ErroPadraoType type = ErroPadraoType.DADOS_INVALIDOS;
+        String detail ="Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+        var bindingResults = ex.getBindingResult();
+        List<Field> fields = bindingResults.getFieldErrors().stream()
+                .map(fieldError -> {
+                    String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+                       return  new Field(
+                               fieldError.getField(),
+                               message);
+                })
+                .collect(Collectors.toList());
+        var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
+        return handleExceptionInternal(ex, erroPadrao, headers, status, request);
+    }
 
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(
@@ -63,8 +91,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s', "
                         + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
                 ex.getName(), ex.getValue(), ex.getRequiredType().getSimpleName());
-
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
         return handleExceptionInternal(ex, erroPadrao, headers, status, request);
     }
 
@@ -83,7 +111,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
         ErroPadraoType type = ErroPadraoType.MENSAGEM_INCOMPREENSIVEL;
         String detail = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
     }
     private ResponseEntity<Object> handlePropertyBindingException(
@@ -96,8 +125,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErroPadraoType type = ErroPadraoType.MENSAGEM_INCOMPREENSIVEL;
         String detail = String.format("A propriedade '%s' não existe. "
                 + "Corrija ou remova essa propriedade e tente novamente.", path);
-
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
         return handleExceptionInternal(ex, erroPadrao, headers, status, request);
 
 
@@ -117,8 +146,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("A propriedade '%s' recebeu o valor '%s'," +
                         "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
                 path, ex.getValue(), ex.getTargetType().getSimpleName());
+        List<Field> fields = null;
 
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
     }
 
@@ -132,7 +162,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("O parâmetro de URL '%s' recebeu o valor '%s'," +
                         "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.",
                 ex.getParameter(), ex.getValue(), ex.getName());
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
+
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
     }
 
@@ -145,7 +177,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErroPadraoType type = ErroPadraoType.RECURSO_NAO_ENCONTRADO;
         String detail = String.format("O recurso '%s', que você tentou acessar, é inexistente.",
                 ex.getRequestURL());
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
     }
 
@@ -157,7 +190,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ErroPadraoType type = ErroPadraoType.RECURSO_NAO_ENCONTRADO;
         String detail = ex.getMessage();
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
 
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
     }
@@ -170,7 +204,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus status = HttpStatus.CONFLICT;
         ErroPadraoType type = ErroPadraoType.ENTIDADE_EM_USO;
         String detail = ex.getMessage();
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
 
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
@@ -183,7 +218,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus status = HttpStatus.BAD_REQUEST;
         ErroPadraoType type = ErroPadraoType.ERRO_NEGOCIO;
         String detail = ex.getMessage();
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
 
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
@@ -196,8 +232,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpStatus status = HttpStatus.CONFLICT;
         ErroPadraoType type = ErroPadraoType.ENTIDADE_EM_USO;
         String detail = ex.getMessage();
+        List<Field> fields = null;
 
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
@@ -215,12 +252,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         // fazendo logging) para mostrar a stacktrace no console
         // Se não fizer isso, você não vai ver a stacktrace de exceptions que seriam importantes
         // para você durante, especialmente na fase de desenvolvimento
+        List<Field> fields = null;
         ex.printStackTrace();
-        var erroPadrao = instanciaErroPadrao(status, type, detail);
+        var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
     }
-
-
     @Override
     protected ResponseEntity<Object> handleExceptionInternal(
             Exception ex,
@@ -243,12 +279,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 
-    private ErroPadrao instanciaErroPadrao(HttpStatus status, ErroPadraoType type, String detail) {
+    private ErroPadrao instanciaErroPadrao(HttpStatus status, ErroPadraoType type, String detail, List<Field> fields) {
         return new ErroPadrao(
                 status.value(),
                 type.getUri(),
                 type.getTitle(),
-                detail
+                detail,
+                fields
         );
     }
 

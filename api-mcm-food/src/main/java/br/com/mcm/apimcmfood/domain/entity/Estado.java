@@ -1,14 +1,20 @@
 package br.com.mcm.apimcmfood.domain.entity;
 
+import br.com.mcm.apimcmfood.domain.exception.groups.Groups;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
 @Table(name="tb_estado")
 public class Estado {
+    @NotNull(groups= Groups.EstadoId.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     @Column(nullable = false)
     private String nome;
 

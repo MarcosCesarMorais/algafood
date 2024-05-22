@@ -1,9 +1,12 @@
 package br.com.mcm.apimcmfood.domain.entity;
 
+import br.com.mcm.apimcmfood.domain.exception.groups.Groups;
 import br.com.mcm.apimcmfood.infrastructure.repository.spec.RestauranteSpecs;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,9 +14,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "tb_cozinha")
 public class Cozinha {
+    @NotNull(groups = Groups.CozinhaId.class)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank
     private String nome;
 
     @JsonIgnore

@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ public class CidadeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adicionar(final @RequestBody Cidade cidade) {
+    public Cidade adicionar(@Valid final @RequestBody Cidade cidade) {
         return cidadeService.adicionar(cidade);
     }
 
@@ -39,6 +40,7 @@ public class CidadeController {
 
     @PutMapping("/{cidadeId}")
     public ResponseEntity<Cidade> atualizar(
+            @Valid
             final @PathVariable("cidadeId") Long id,
             final @RequestBody Cidade cidade
     ) {

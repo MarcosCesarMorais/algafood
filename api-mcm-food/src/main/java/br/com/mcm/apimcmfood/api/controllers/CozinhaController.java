@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 @RestController
@@ -23,7 +24,7 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@RequestBody Cozinha cozinha) {
+    public Cozinha adicionar(@Valid @RequestBody Cozinha cozinha) {
         return cozinhaService.adicionar(cozinha);
     }
 
@@ -39,6 +40,7 @@ public class CozinhaController {
 
     @PutMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> atualizar(
+            @Valid
             final @PathVariable("cozinhaId") Long id,
             final @RequestBody Cozinha cozinha
     ) {

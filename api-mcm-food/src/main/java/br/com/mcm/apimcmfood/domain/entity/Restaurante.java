@@ -1,11 +1,16 @@
 package br.com.mcm.apimcmfood.domain.entity;
 
+import br.com.mcm.apimcmfood.domain.exception.groups.Groups;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.*;
+import javax.validation.groups.ConvertGroup;
+import javax.validation.groups.Default;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,12 +23,13 @@ public class Restaurante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @NotBlank
     @Column(nullable = false)
     private String nome;
+
+    @PositiveOrZero //  @DecimalMin("0")
     @Column(name = "taxa_frete",nullable = false)
     private BigDecimal taxaFrete;
-
     @JsonIgnore
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
@@ -37,8 +43,9 @@ public class Restaurante {
     @JsonIgnore
     @Embedded
     private Endereco endereco;
-    //@JsonIgnoreProperties("hibernateLazyInitializer")
-   // @JsonIgnore
+    @Valid
+    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+    @NotNull
     @ManyToOne//(fetch = FetchType.LAZY)
     @JoinColumn(name="cozinha_id",nullable = false)
     private Cozinha cozinha;

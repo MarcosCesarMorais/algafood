@@ -1,15 +1,12 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
-import br.com.mcm.apimcmfood.domain.entity.Estado;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
 import br.com.mcm.apimcmfood.application.service.RestauranteService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -28,20 +25,17 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@RequestBody Restaurante restaurante) {
+    public Restaurante adicionar(@Valid @RequestBody Restaurante restaurante) {
         return restauranteService.adicionar(restaurante);
     }
 
     @GetMapping
-    public List<Restaurante> listar( ) {
+    public List<Restaurante> listar() {
         return restauranteService.listar();
     }
 
     @GetMapping("/{restauranteId}")
     public ResponseEntity<Restaurante> buscar(@PathVariable("restauranteId") Long id) {
-        if(true){
-            throw new IllegalArgumentException("teste");
-        }
         return ResponseEntity.ok(restauranteService.buscar(id));
     }
 
@@ -58,7 +52,7 @@ public class RestauranteController {
             final @PathVariable("restauranteId") Long id,
             final @RequestBody Map<String, Object> campos,
             HttpServletRequest request
-    ){
+    ) {
         return ResponseEntity.ok(restauranteService.atualizarParcial(id, campos, request));
     }
 
