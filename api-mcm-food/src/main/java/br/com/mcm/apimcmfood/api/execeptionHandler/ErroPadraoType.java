@@ -8,6 +8,8 @@ public enum ErroPadraoType {
     ERRO_NEGOCIO("/erro-negocio", "Violação de regra de negócio"),
     ERRO_DE_SISTEMA("/erro-de-sistema", "Erro de sistema"),
     DADOS_INVALIDOS("/dados-invalidos", "Dados inválidos"),
+
+    PARAMETRO_OBRIGATORIO("/parametro-obrigatório", "Parâmetro obrigatório"),
     PARAMETRO_INVALIDO("/parametro-invalido", "Parâmetro inválido");
 
 

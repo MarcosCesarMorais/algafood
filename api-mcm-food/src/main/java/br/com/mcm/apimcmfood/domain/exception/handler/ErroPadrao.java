@@ -18,6 +18,14 @@ public record ErroPadrao(
             final Integer status,
             final String title
     ){
-       this(status, title, null,null,null);
+        this(status, title, null,null,null);
+    }
+
+    public ErroPadrao(
+            final Integer status,
+            final String title,
+            final String detail
+    ){
+        this(status, title, detail,null,null);
     }
 }

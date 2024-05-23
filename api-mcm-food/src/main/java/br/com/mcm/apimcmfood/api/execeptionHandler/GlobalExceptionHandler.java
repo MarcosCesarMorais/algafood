@@ -1,9 +1,6 @@
 package br.com.mcm.apimcmfood.api.execeptionHandler;
 
-import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
-import br.com.mcm.apimcmfood.domain.exception.EntidadeJaExisteException;
-import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
-import br.com.mcm.apimcmfood.domain.exception.NegocioException;
+import br.com.mcm.apimcmfood.domain.exception.*;
 import br.com.mcm.apimcmfood.domain.exception.handler.ErroPadrao;
 import br.com.mcm.apimcmfood.domain.exception.handler.Field;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -40,6 +37,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             HttpStatus status,
             WebRequest request
     ){
+
         ErroPadraoType type = ErroPadraoType.DADOS_INVALIDOS;
         String detail ="Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
         var bindingResults = ex.getBindingResult();
@@ -237,7 +235,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         var erroPadrao = instanciaErroPadrao(status, type, detail,fields);
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object>handleUncaught(
             Exception ex,

@@ -3,6 +3,7 @@ package br.com.mcm.apimcmfood.application.service;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
 import br.com.mcm.apimcmfood.domain.exception.NegocioException;
+import br.com.mcm.apimcmfood.domain.exception.ValidacaoException;
 import br.com.mcm.apimcmfood.infrastructure.repository.RestauranteRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +13,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
@@ -24,6 +27,7 @@ public class RestauranteService {
 
     private RestauranteRepository restauranteRepository;
     private CozinhaService cozinhaService;
+    private SmartValidator validator;
 
     private static final String MSG_RESTAURANTE_NAO_ENCONTRADO
             = "Não existe um cadastro de restaurante com código %d";
@@ -33,10 +37,12 @@ public class RestauranteService {
 
     public RestauranteService(
             final RestauranteRepository restauranteRepository,
-            final CozinhaService cozinhaService
+            final CozinhaService cozinhaService,
+            final SmartValidator validator
     ) {
         this.restauranteRepository = Objects.requireNonNull(restauranteRepository);
         this.cozinhaService = Objects.requireNonNull(cozinhaService);
+        this.validator = validator;
     }
 
     public Restaurante adicionar(final Restaurante restaurante) {
@@ -78,6 +84,7 @@ public class RestauranteService {
                 () -> new EntidadeNaoEncontradaException(
                         String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
         merge(campos, restauranteAtual, request);
+        validate(restauranteAtual, "restaurante");
         return this.restauranteRepository.save(restauranteAtual);
     }
 
@@ -90,6 +97,15 @@ public class RestauranteService {
         }
     }
 
+    private void validate(Restaurante restaurante, String objectName) {
+        BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
+        validator.validate(restaurante, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            throw new ValidacaoException(bindingResult);
+        }
+    }
+
     private void merge(
             Map<String, Object> dadosOrigem,
             Restaurante restauranteDestino,
@@ -99,12 +115,16 @@ public class RestauranteService {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+
             Restaurante restauranteOrigem = objectMapper.convertValue(dadosOrigem, Restaurante.class);
 
             dadosOrigem.forEach((nomePropriedade, valorPropriedade) -> {
                         Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
                         field.setAccessible(true);
+
                         Object valorAtualizado = ReflectionUtils.getField(field, restauranteOrigem);
+
                         ReflectionUtils.setField(field, restauranteDestino, valorAtualizado);
                     }
             );
