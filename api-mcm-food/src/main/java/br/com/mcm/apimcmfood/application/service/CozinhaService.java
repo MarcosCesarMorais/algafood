@@ -9,7 +9,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -28,7 +30,7 @@ public class CozinhaService {
     ) {
         this.cozinhaRepository = Objects.requireNonNull(cozinhaRepository);
     }
-
+    @Transactional
     public Cozinha adicionar(Cozinha cozinha) {
         return cozinhaRepository.save(cozinha);
     }
@@ -39,11 +41,11 @@ public class CozinhaService {
                         String.format(MSG_COZINHA_NAO_ENCONTRADA, id))
         );
     }
-
-    public Page<Cozinha> listar(Pageable pageable) {
-        return cozinhaRepository.findAll(pageable);
+    public List<Cozinha> listar() {
+        return cozinhaRepository.findAll();
     }
 
+    @Transactional
     public Cozinha atualizar(Long id, Cozinha cozinha) {
         var cozinhaAtual = cozinhaRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
@@ -52,6 +54,7 @@ public class CozinhaService {
         return this.cozinhaRepository.save(cozinhaAtual);
     }
 
+    @Transactional
     public void remover(final Long id) {
         try {
             if (this.cozinhaRepository.existsById(id)) {

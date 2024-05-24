@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -29,8 +30,8 @@ public class CozinhaController {
     }
 
     @GetMapping
-    public Page<Cozinha> listar(Pageable pageable) {
-        return cozinhaService.listar(pageable);
+    public List<Cozinha> listar() {
+        return cozinhaService.listar();
     }
 
     @GetMapping("/{cozinhaId}")
