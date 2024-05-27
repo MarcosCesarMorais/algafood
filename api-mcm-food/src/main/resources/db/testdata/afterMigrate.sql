@@ -29,7 +29,7 @@ insert into tb_cozinha (id, nome) values (1, 'Tailandesa');
 insert into tb_cozinha (id, nome) values (2, 'Indiana');
 insert into tb_cozinha (id, nome) values (3, 'Argentina');
 insert into tb_cozinha (id, nome) values (4, 'Brasileira');
-insert into tb_cozinha (id, nome) values (5, 'Afeicana');
+insert into tb_cozinha (id, nome) values (5, 'Africana');
 
 insert into tb_estado (id, nome) values (1, 'Minas Gerais');
 insert into tb_estado (id, nome) values (2, 'São Paulo');

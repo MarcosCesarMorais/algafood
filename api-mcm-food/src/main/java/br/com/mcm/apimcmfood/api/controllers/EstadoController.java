@@ -41,7 +41,10 @@ public class EstadoController {
     }
 
     @PutMapping("/{estadoId}")
-    public ResponseEntity<Estado> atualizar( final @PathVariable("estadoId") Long id, @Valid final @RequestBody Estado estado
+    public ResponseEntity<Estado> atualizar(
+            final @PathVariable("estadoId") Long id,
+            @Valid
+            final @RequestBody Estado estado
     ) {
         return ResponseEntity.ok(estadoService.atualizar(id, estado));
     }

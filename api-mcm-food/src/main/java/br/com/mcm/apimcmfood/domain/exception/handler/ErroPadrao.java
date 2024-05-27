@@ -12,7 +12,7 @@ public record ErroPadrao(
         String type,
         String title,
         String detail,
-        List<Field> filds
+        List<Field> fields
 ) {
     public ErroPadrao(
             final Integer status,
