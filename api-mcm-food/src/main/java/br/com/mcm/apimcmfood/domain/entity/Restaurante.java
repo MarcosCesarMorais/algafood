@@ -13,6 +13,7 @@ import javax.validation.groups.ConvertGroup;
 import javax.validation.groups.Default;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,45 +27,34 @@ public class Restaurante {
     @NotBlank
     @Column(nullable = false)
     private String nome;
-
-    @PositiveOrZero //  @DecimalMin("0")
+    @PositiveOrZero
     @Column(name = "taxa_frete",nullable = false)
     private BigDecimal taxaFrete;
-    @JsonIgnore
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime dataCadastro;
-
-    @JsonIgnore
+    private OffsetDateTime dataCadastro;
     @UpdateTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
-    private LocalDateTime dataAtualizacao;
-
-    @JsonIgnore
+    private OffsetDateTime dataAtualizacao;
     @Embedded
     private Endereco endereco;
     @Valid
     @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
     @NotNull
-    @ManyToOne//(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="cozinha_id",nullable = false)
     private Cozinha cozinha;
-
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name="tb_restaurante_forma_pagamento",
             joinColumns = @JoinColumn(name="restaurante_id"),
             inverseJoinColumns = @JoinColumn(name="forma_pagamento_id")
     )
     private List<FormaPagamento> formasPagamento = new ArrayList<>();
-
-    @JsonIgnore
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
-
     public Restaurante(){}
 
-    public Restaurante(Long id, String nome, BigDecimal taxaFrete, LocalDateTime dataCadastro, LocalDateTime dataAtualizacao, Endereco endereco, Cozinha cozinha, List<FormaPagamento> formasPagamento, List<Produto> produtos) {
+    public Restaurante(Long id, String nome, BigDecimal taxaFrete, OffsetDateTime dataCadastro, OffsetDateTime dataAtualizacao, Endereco endereco, Cozinha cozinha, List<FormaPagamento> formasPagamento, List<Produto> produtos) {
         this.id = id;
         this.nome = nome;
         this.taxaFrete = taxaFrete;
@@ -108,6 +98,14 @@ public class Restaurante {
         this.cozinha = cozinha;
     }
 
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
     public List<FormaPagamento> getFormasPagamento() {
         return formasPagamento;
     }
@@ -124,19 +122,19 @@ public class Restaurante {
         this.produtos = produtos;
     }
 
-    public LocalDateTime getDataCadastro() {
+    public OffsetDateTime getDataCadastro() {
         return dataCadastro;
     }
 
-    public void setDataCadastro(LocalDateTime dataCadastro) {
+    public void setDataCadastro(OffsetDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
 
-    public LocalDateTime getDataAtualizacao() {
+    public OffsetDateTime getDataAtualizacao() {
         return dataAtualizacao;
     }
 
-    public void setDataAtualizacao(LocalDateTime dataAtualizacao) {
+    public void setDataAtualizacao(OffsetDateTime dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
     }
 

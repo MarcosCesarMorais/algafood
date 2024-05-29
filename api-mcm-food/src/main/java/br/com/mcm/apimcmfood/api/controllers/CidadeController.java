@@ -1,9 +1,7 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
-import br.com.mcm.apimcmfood.application.service.CidadeService;
+import br.com.mcm.apimcmfood.domain.service.CidadeService;
 import br.com.mcm.apimcmfood.domain.entity.Cidade;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

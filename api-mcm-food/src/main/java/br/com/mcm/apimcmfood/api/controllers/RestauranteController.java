@@ -1,20 +1,29 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
+import br.com.mcm.apimcmfood.api.model.restaurante.mapper.RestauranteRequestMapper;
+import br.com.mcm.apimcmfood.api.model.restaurante.mapper.RestauranteResponseMapper;
+import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteListResponse;
+import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteRequest;
+import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteResponse;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
-import br.com.mcm.apimcmfood.application.service.RestauranteService;
+import br.com.mcm.apimcmfood.domain.service.RestauranteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @RestController
 @RequestMapping(value = "/restaurantes")
 public class RestauranteController {
 
+    @Autowired
+    private RestauranteRequestMapper restauranteRequestMapper;
+    @Autowired
+    private RestauranteResponseMapper restauranteResponseMapper;
     private RestauranteService restauranteService;
 
     public RestauranteController(
@@ -25,39 +34,33 @@ public class RestauranteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Restaurante adicionar(@Valid @RequestBody Restaurante restaurante) {
-        return restauranteService.adicionar(restaurante);
+    public RestauranteResponse adicionar(@Valid @RequestBody RestauranteRequest request) {
+        Restaurante restaurante = restauranteRequestMapper.toDomain(request);
+        return restauranteResponseMapper.toResponse(restauranteService.adicionar(restaurante));
     }
 
     @GetMapping
-    public List<Restaurante> listar() {
-        return restauranteService.listar();
+    public List<RestauranteListResponse> listar() {
+        return restauranteResponseMapper.toCollectionResponse(restauranteService.listar());
     }
 
     @GetMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable("restauranteId") Long id) {
-        return ResponseEntity.ok(restauranteService.buscar(id));
+    public ResponseEntity<RestauranteResponse> buscar(@PathVariable("restauranteId") Long id) {
+        return ResponseEntity.ok(restauranteResponseMapper.toResponse(restauranteService.buscar(id)));
     }
 
     @PutMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> atualizar(
+    public ResponseEntity<RestauranteResponse> atualizar(
             final @PathVariable("restauranteId") Long id,
-            final @RequestBody Restaurante restaurante
+            final @Valid @RequestBody RestauranteRequest request
     ) {
-        return ResponseEntity.ok(restauranteService.atualizar(id, restaurante));
-    }
-
-    @PatchMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> atualizarParcial(
-            final @PathVariable("restauranteId") Long id,
-            final @RequestBody Map<String, Object> campos,
-            HttpServletRequest request
-    ) {
-        return ResponseEntity.ok(restauranteService.atualizarParcial(id, campos, request));
+        Restaurante restauranteAtual = restauranteService.buscar(id);
+        restauranteRequestMapper.copyToDomainObject(request, restauranteAtual);
+        return ResponseEntity.ok(restauranteResponseMapper.toResponse(restauranteService.atualizar(restauranteAtual)));
     }
 
     @DeleteMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> remover(@PathVariable("restauranteId") Long id) {
+    public ResponseEntity<?> remover(@PathVariable("restauranteId") Long id) {
         this.restauranteService.remover(id);
         return ResponseEntity.noContent().build();
     }

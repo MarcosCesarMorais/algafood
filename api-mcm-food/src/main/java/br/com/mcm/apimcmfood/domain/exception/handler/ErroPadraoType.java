@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.api.execeptionHandler;
+package br.com.mcm.apimcmfood.domain.exception.handler;
 
 public enum ErroPadraoType {
 

@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.application.service;
+package br.com.mcm.apimcmfood.domain.service;
 
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
@@ -6,7 +6,9 @@ import br.com.mcm.apimcmfood.domain.entity.Cozinha;
 import br.com.mcm.apimcmfood.infrastructure.repository.CozinhaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -54,15 +56,22 @@ public class CozinhaService {
 
     public void remover(final Long id) {
         try {
-            if (this.cozinhaRepository.existsById(id)) {
-                this.cozinhaRepository.deleteById(id);
-            } else {
-                throw new EntidadeNaoEncontradaException(
-                        String.format(MSG_COZINHA_NAO_ENCONTRADA, id));
-            }
+            cozinhaRepository.deleteById(id);
+            cozinhaRepository.flush();
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntidadeNaoEncontradaException(
+                    String.format(MSG_COZINHA_NAO_ENCONTRADA, id));
+
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_COZINHA_EM_USO, id));
         }
+    }
+
+    public Cozinha buscarOuFalhar(Long cozinhaId) {
+        return cozinhaRepository.findById(cozinhaId).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format(MSG_COZINHA_NAO_ENCONTRADA, cozinhaId)
+                ));
     }
 }

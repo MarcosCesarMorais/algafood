@@ -1,9 +1,13 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
+import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaListResponse;
+import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaRequest;
+import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaResponse;
+import br.com.mcm.apimcmfood.api.model.cozinha.mapper.CozinhaRequestMapper;
+import br.com.mcm.apimcmfood.api.model.cozinha.mapper.CozinhaResponseMapper;
 import br.com.mcm.apimcmfood.domain.entity.Cozinha;
-import br.com.mcm.apimcmfood.application.service.CozinhaService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import br.com.mcm.apimcmfood.domain.service.CozinhaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,11 @@ import java.util.Objects;
 @RestController
 @RequestMapping(value = "/cozinhas")
 public class CozinhaController {
+
+    @Autowired
+    private CozinhaRequestMapper cozinhaRequestMapper;
+    @Autowired
+    private CozinhaResponseMapper cozinhaResponseMapper;
     private CozinhaService cozinhaService;
 
     public CozinhaController(
@@ -25,30 +34,38 @@ public class CozinhaController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cozinha adicionar(@Valid @RequestBody Cozinha cozinha) {
-        return cozinhaService.adicionar(cozinha);
+    public CozinhaResponse adicionar(
+            final @Valid @RequestBody CozinhaRequest request
+    ) {
+        return cozinhaResponseMapper.toResponse(
+                cozinhaService.adicionar(cozinhaRequestMapper.toDomain(request))
+        );
     }
 
     @GetMapping
-    public List<Cozinha> listar() {
-        return cozinhaService.listar();
+    public List<CozinhaListResponse> listar() {
+        return cozinhaResponseMapper.toCollectionResponse(cozinhaService.listar());
     }
 
     @GetMapping("/{cozinhaId}")
-    public ResponseEntity<Cozinha> buscar(@PathVariable("cozinhaId") Long id) {
-        return ResponseEntity.ok(cozinhaService.buscar(id));
+    public ResponseEntity<CozinhaResponse> buscar(final @PathVariable("cozinhaId") Long id) {
+        return ResponseEntity.ok(
+                cozinhaResponseMapper.toResponse(cozinhaService.buscar(id))
+        );
     }
 
     @PutMapping("/{cozinhaId}")
-    public ResponseEntity<Cozinha> atualizar(
+    public ResponseEntity<CozinhaResponse> atualizar(
             final @PathVariable("cozinhaId") Long id,
-            @Valid
-            final @RequestBody Cozinha cozinha
+            @Valid final @RequestBody Cozinha cozinha
     ) {
-        return ResponseEntity.ok(cozinhaService.atualizar(id, cozinha));
+        return ResponseEntity.ok(
+                cozinhaResponseMapper.toResponse(cozinhaService.atualizar(id, cozinha))
+        );
     }
+
     @DeleteMapping("/{cozinhaId}")
-    public ResponseEntity<Cozinha> remover(@PathVariable("cozinhaId") Long id) {
+    public ResponseEntity<?> remover(@PathVariable("cozinhaId") Long id) {
         this.cozinhaService.remover(id);
         return ResponseEntity.noContent().build();
     }

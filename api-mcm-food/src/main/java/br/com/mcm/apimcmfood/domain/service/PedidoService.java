@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.application.service;
+package br.com.mcm.apimcmfood.domain.service;
 
 import br.com.mcm.apimcmfood.domain.entity.Pedido;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;

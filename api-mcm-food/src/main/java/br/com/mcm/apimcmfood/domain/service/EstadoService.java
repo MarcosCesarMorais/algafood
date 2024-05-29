@@ -1,15 +1,18 @@
-package br.com.mcm.apimcmfood.application.service;
+package br.com.mcm.apimcmfood.domain.service;
 
+import br.com.mcm.apimcmfood.domain.entity.Cozinha;
 import br.com.mcm.apimcmfood.domain.entity.Estado;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.infrastructure.repository.EstadoRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -17,7 +20,7 @@ public class EstadoService {
 
     private EstadoRepository estadoRepository;
 
-    private static final String MSG_ESTADO_EM_USO  =
+    private static final String MSG_ESTADO_EM_USO =
             "Estado de código %d não pode ser removido, pois está em uso";
 
     private static final String MSG_ESTADO_NAO_ENCONTRADO =
@@ -38,35 +41,33 @@ public class EstadoService {
                 ));
     }
 
-    public Page<Estado> listar(final Pageable pageable) {
-        return estadoRepository.findAll(pageable);
+    public List<Estado> listar() {
+        return estadoRepository.findAll();
     }
 
     public Estado atualizar(final Long id, final Estado estado) {
-        var estadoAtual = estadoRepository.findById(id).orElseThrow(
-                () -> new EntidadeNaoEncontradaException(
-                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
-                ));
-        BeanUtils.copyProperties(estado, estadoAtual, "id");
+        var estadoAtual = buscarOuFalhar(id);
         return this.estadoRepository.save(estadoAtual);
     }
 
     public void remover(final Long id) {
         try {
-            if (this.estadoRepository.existsById(id)) {
-                this.estadoRepository.deleteById(id);
-            } else {
-                throw new EntidadeNaoEncontradaException(
-                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id));
-            }
+            estadoRepository.deleteById(id);
+            estadoRepository.flush();
+        } catch (EmptyResultDataAccessException e) {
+            throw new EntidadeNaoEncontradaException(
+                    String.format(MSG_ESTADO_NAO_ENCONTRADO, id));
+
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_ESTADO_EM_USO, id));
-
         }
     }
 
-    public Boolean existe(Long id){
-        return this.estadoRepository.existsById(id);
+    private Estado buscarOuFalhar(Long id) {
+        return estadoRepository.findById(id).orElseThrow(
+                () -> new EntidadeNaoEncontradaException(
+                        String.format(MSG_ESTADO_NAO_ENCONTRADO, id)
+                ));
     }
 }

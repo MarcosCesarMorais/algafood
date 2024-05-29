@@ -1,5 +1,6 @@
-package br.com.mcm.apimcmfood.api.execeptionHandler;
+package br.com.mcm.apimcmfood.api.controllers;
 
+import br.com.mcm.apimcmfood.domain.exception.handler.ErroPadraoType;
 import br.com.mcm.apimcmfood.domain.exception.*;
 import br.com.mcm.apimcmfood.domain.exception.handler.ErroPadrao;
 import br.com.mcm.apimcmfood.domain.exception.handler.Field;

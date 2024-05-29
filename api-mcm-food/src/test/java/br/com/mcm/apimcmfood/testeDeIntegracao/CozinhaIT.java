@@ -3,7 +3,6 @@ package br.com.mcm.apimcmfood.testeDeIntegracao;
 import br.com.mcm.apimcmfood.DatabaseCleaner;
 import br.com.mcm.apimcmfood.IntegrationTest;
 import br.com.mcm.apimcmfood.AdicionaCorpoJson;
-import br.com.mcm.apimcmfood.utils.CarregaJson;
 import br.com.mcm.apimcmfood.domain.entity.Cozinha;
 import br.com.mcm.apimcmfood.infrastructure.repository.CozinhaRepository;
 import io.restassured.RestAssured;

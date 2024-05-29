@@ -1,6 +1,6 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
-import br.com.mcm.apimcmfood.application.service.PedidoService;
+import br.com.mcm.apimcmfood.domain.service.PedidoService;
 import br.com.mcm.apimcmfood.domain.entity.Pedido;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.application.service;
+package br.com.mcm.apimcmfood.domain.service;
 
 import br.com.mcm.apimcmfood.domain.entity.Cidade;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
@@ -40,15 +40,7 @@ public class CidadeService {
                 throw new EntidadeJaExisteException(
                         String.format("Cidade com o nome " + cidade.getNome() +", já existe no Estado "+ cidadeAtual.get().getEstado().getNome() +"."));
         }
-        if(estadoService.existe(cidade.getEstado().getId())){
-            var estadoAtual = estadoService.buscar(cidade.getEstado().getId());
-            cidade.setEstado(estadoAtual);
-            return cidadeRepository.save(cidade);
-        } else {
-            throw new NegocioException(
-                    String.format(MSG_ESTADO_NAO_ENCONTRADA, cidade.getEstado().getId()));
-        }
-
+        return cidadeRepository.save(cidade);
     }
 
     public Cidade buscar(final Long id) {
