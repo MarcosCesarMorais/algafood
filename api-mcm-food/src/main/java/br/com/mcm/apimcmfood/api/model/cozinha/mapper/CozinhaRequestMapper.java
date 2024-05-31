@@ -12,11 +12,11 @@ public class CozinhaRequestMapper {
     @Autowired
     private ModelMapper modelMapper;
 
-    public Cozinha toDomain (CozinhaRequest request){
+    public Cozinha toDomain(CozinhaRequest request) {
         return modelMapper.map(request, Cozinha.class);
     }
 
-    public void copyToDomainObject(CozinhaRequest request, Cozinha cozinha){
+    public void copyToDomainObject(CozinhaRequest request, Cozinha cozinha) {
         modelMapper.map(request, cozinha);
     }
 }

@@ -8,6 +8,7 @@ public class CozinhaResponse {
     private Long id;
 
     private String nome;
+
     @JsonIgnore
     private RestauranteResponse restauranteResponse;
 

@@ -3,17 +3,9 @@ import javax.validation.constraints.NotBlank;
 
 
 public class EstadoRequest {
-    private Long id;
+
     @NotBlank
     private String nome;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;

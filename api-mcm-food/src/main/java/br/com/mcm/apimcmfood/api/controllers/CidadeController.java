@@ -1,7 +1,13 @@
 package br.com.mcm.apimcmfood.api.controllers;
 
+import br.com.mcm.apimcmfood.api.model.cidade.CidadeListResponse;
+import br.com.mcm.apimcmfood.api.model.cidade.CidadeRequest;
+import br.com.mcm.apimcmfood.api.model.cidade.CidadeResponse;
+import br.com.mcm.apimcmfood.api.model.cidade.mapper.CidadeRequestMapper;
+import br.com.mcm.apimcmfood.api.model.cidade.mapper.CidadeResponseMapper;
 import br.com.mcm.apimcmfood.domain.service.CidadeService;
 import br.com.mcm.apimcmfood.domain.entity.Cidade;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +20,12 @@ import java.util.Objects;
 @RequestMapping(value = "/cidades")
 public class CidadeController {
 
+    @Autowired
+    private CidadeRequestMapper cidadeRequestMapper;
+
+    @Autowired
+    private CidadeResponseMapper cidadeResponseMapper;
+
     private CidadeService cidadeService;
 
     public CidadeController(final CidadeService cidadeService) {
@@ -22,31 +34,37 @@ public class CidadeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cidade adicionar(@Valid final @RequestBody Cidade cidade) {
-        return cidadeService.adicionar(cidade);
+    public CidadeResponse adicionar(@Valid final @RequestBody CidadeRequest request) {
+        return cidadeResponseMapper.toResponse(
+                cidadeService.adicionar(cidadeRequestMapper.toDomain(request))
+        );
     }
 
     @GetMapping("/{cidadeId}")
-    public ResponseEntity<Cidade> buscar(@PathVariable("cidadeId") Long id) {
-        return ResponseEntity.ok(cidadeService.buscar(id));
+    public ResponseEntity<CidadeResponse> buscar(@PathVariable("cidadeId") Long id) {
+        return ResponseEntity.ok(
+                cidadeResponseMapper.toResponse(cidadeService.buscar(id))
+        );
     }
 
     @GetMapping
-    public List<Cidade> listar() {
-        return cidadeService.listar();
+    public List<CidadeListResponse> listar() {
+        return cidadeResponseMapper.toCollectionResponse(cidadeService.listar());
     }
 
     @PutMapping("/{cidadeId}")
-    public ResponseEntity<Cidade> atualizar(
-            @Valid
+    public ResponseEntity<CidadeResponse> atualizar(
             final @PathVariable("cidadeId") Long id,
-            final @RequestBody Cidade cidade
+            final @Valid @RequestBody CidadeRequest request
     ) {
-        return ResponseEntity.ok(cidadeService.atualizar(id, cidade));
+        Cidade cidadeAtual = cidadeService.buscar(id);
+        cidadeRequestMapper.copyToDomainObject(request, cidadeAtual);
+
+        return ResponseEntity.ok(cidadeResponseMapper.toResponse(cidadeService.atualizar(cidadeAtual)));
     }
 
     @DeleteMapping("/{cidadeId}")
-    public ResponseEntity<Cidade> remover(final @PathVariable("cidadeId") Long id) {
+    public ResponseEntity<?> remover(final @PathVariable("cidadeId") Long id) {
         this.cidadeService.remover(id);
         return ResponseEntity.noContent().build();
     }
