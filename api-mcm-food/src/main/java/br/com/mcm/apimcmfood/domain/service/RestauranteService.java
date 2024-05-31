@@ -81,6 +81,18 @@ public class RestauranteService {
         }
     }
 
+    @Transactional
+    public void ativar(final Long id){
+        Restaurante restauranteAtual = buscarOuFalhar(id);
+        restauranteAtual.ativar();
+    }
+
+    @Transactional
+    public void inativar(final Long id){
+        Restaurante restauranteAtual = buscarOuFalhar(id);
+        restauranteAtual.inativar();
+    }
+
     private Restaurante buscarOuFalhar(final Long id) {
         return restauranteRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(

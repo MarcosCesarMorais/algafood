@@ -24,10 +24,8 @@ public class Restaurante {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
     @Column(nullable = false)
     private String nome;
-    @PositiveOrZero
     @Column(name = "taxa_frete",nullable = false)
     private BigDecimal taxaFrete;
     @CreationTimestamp
@@ -38,9 +36,8 @@ public class Restaurante {
     private OffsetDateTime dataAtualizacao;
     @Embedded
     private Endereco endereco;
-    @Valid
-    @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
-    @NotNull
+
+    private Boolean ativo = Boolean.TRUE;
     @ManyToOne
     @JoinColumn(name="cozinha_id",nullable = false)
     private Cozinha cozinha;
@@ -54,16 +51,25 @@ public class Restaurante {
     private List<Produto> produtos = new ArrayList<>();
     public Restaurante(){}
 
-    public Restaurante(Long id, String nome, BigDecimal taxaFrete, OffsetDateTime dataCadastro, OffsetDateTime dataAtualizacao, Endereco endereco, Cozinha cozinha, List<FormaPagamento> formasPagamento, List<Produto> produtos) {
+    public Restaurante(Long id, String nome, BigDecimal taxaFrete, OffsetDateTime dataCadastro, OffsetDateTime dataAtualizacao, Endereco endereco, Boolean ativo, Cozinha cozinha, List<FormaPagamento> formasPagamento, List<Produto> produtos) {
         this.id = id;
         this.nome = nome;
         this.taxaFrete = taxaFrete;
         this.dataCadastro = dataCadastro;
         this.dataAtualizacao = dataAtualizacao;
         this.endereco = endereco;
+        this.ativo = ativo;
         this.cozinha = cozinha;
         this.formasPagamento = formasPagamento;
         this.produtos = produtos;
+    }
+
+    public void ativar(){
+        setAtivo(true);
+    }
+
+    public void inativar(){
+        setAtivo(false);
     }
 
     public Long getId() {
@@ -136,6 +142,14 @@ public class Restaurante {
 
     public void setDataAtualizacao(OffsetDateTime dataAtualizacao) {
         this.dataAtualizacao = dataAtualizacao;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 
     @Override

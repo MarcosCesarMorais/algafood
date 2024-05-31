@@ -9,6 +9,7 @@ public class RestauranteResponse {
     private String nome;
     private BigDecimal taxaFrete;
     private CozinhaResponse cozinha;
+    private Boolean ativo;
 
     public Long getId() {
         return id;
@@ -40,5 +41,13 @@ public class RestauranteResponse {
 
     public void setCozinha(CozinhaResponse cozinha) {
         this.cozinha = cozinha;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
     }
 }

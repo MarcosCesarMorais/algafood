@@ -1,5 +1,6 @@
 package br.com.mcm.apimcmfood.api.model.restaurante;
 
+import br.com.mcm.apimcmfood.api.model.EnderecoRequest.EnderecoRequest;
 import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaIdRequest;
 import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaResponse;
 import br.com.mcm.apimcmfood.domain.exception.groups.Groups;
@@ -23,6 +24,9 @@ public class RestauranteRequest {
     @Valid
     @NotNull
     private CozinhaIdRequest cozinha;
+    @Valid
+    @NotNull
+    private EnderecoRequest endereco;
 
     public String getNome() {
         return nome;
@@ -46,5 +50,13 @@ public class RestauranteRequest {
 
     public void setCozinha(CozinhaIdRequest cozinha) {
         this.cozinha = cozinha;
+    }
+
+    public EnderecoRequest getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(EnderecoRequest endereco) {
+        this.endereco = endereco;
     }
 }
