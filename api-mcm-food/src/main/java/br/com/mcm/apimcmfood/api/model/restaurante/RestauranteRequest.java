@@ -1,16 +1,12 @@
 package br.com.mcm.apimcmfood.api.model.restaurante;
 
-import br.com.mcm.apimcmfood.api.model.EnderecoRequest.EnderecoRequest;
+import br.com.mcm.apimcmfood.api.model.endereco.EnderecoRequest;
 import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaIdRequest;
-import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaResponse;
-import br.com.mcm.apimcmfood.domain.exception.groups.Groups;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 import java.math.BigDecimal;
 
 public class RestauranteRequest {

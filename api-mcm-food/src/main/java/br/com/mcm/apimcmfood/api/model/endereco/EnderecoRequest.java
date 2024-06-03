@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.api.model.EnderecoRequest;
+package br.com.mcm.apimcmfood.api.model.endereco;
 
 import br.com.mcm.apimcmfood.api.model.cidade.CidadeIdRequest;
 
@@ -13,9 +13,11 @@ public class EnderecoRequest {
     private String logradouro;
     @NotBlank
     private String numero;
+
     private String complemento;
     @NotBlank
     private String bairro;
+
     @Valid
     @NotNull
     private CidadeIdRequest cidade;

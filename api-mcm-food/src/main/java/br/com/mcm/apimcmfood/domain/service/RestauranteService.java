@@ -1,17 +1,20 @@
 package br.com.mcm.apimcmfood.domain.service;
 
 import br.com.mcm.apimcmfood.api.model.restaurante.mapper.RestauranteRequestMapper;
+import br.com.mcm.apimcmfood.domain.entity.Cidade;
 import br.com.mcm.apimcmfood.domain.entity.Cozinha;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
 import br.com.mcm.apimcmfood.domain.exception.NegocioException;
 import br.com.mcm.apimcmfood.infrastructure.repository.RestauranteRepository;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -22,6 +25,7 @@ public class RestauranteService {
     private RestauranteRequestMapper restauranteRequestMapper;
     private RestauranteRepository restauranteRepository;
     private CozinhaService cozinhaService;
+    private CidadeService cidadeService;
 
     private static final String MSG_RESTAURANTE_NAO_ENCONTRADO
             = "Não existe um cadastro de restaurante com código %d";
@@ -32,22 +36,15 @@ public class RestauranteService {
     private static final String MSG_COZINHA_EM_USO =
             "Não é possível remover o restaurante com o código %d, pois está associada a uma ou mais cozinhas.";
 
-    public RestauranteService(final RestauranteRepository restauranteRepository, final CozinhaService cozinhaService) {
+    public RestauranteService(final RestauranteRepository restauranteRepository, final CozinhaService cozinhaService, CidadeService cidadeService) {
         this.restauranteRepository = Objects.requireNonNull(restauranteRepository);
         this.cozinhaService = Objects.requireNonNull(cozinhaService);
+        this.cidadeService = Objects.requireNonNull(cidadeService);
     }
-    @Transactional
-    public Restaurante adicionar(final Restaurante restaurante) {
-        Long cozinhaId = restaurante.getCozinha().getId();
 
-        try {
-            Cozinha cozinhaAtual = cozinhaService.buscar(cozinhaId);
-            restaurante.setCozinha(cozinhaAtual);
-            return salvarRestaurante(restaurante);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(
-                    String.format(MSG_RESTAURANTE_COZINHA_INVALIDA, cozinhaId));
-        }
+    
+    public Restaurante adicionar(final Restaurante restaurante) {
+        return salvarRestaurante(restaurante);
     }
 
     public Restaurante buscar(final Long id) {
@@ -58,23 +55,19 @@ public class RestauranteService {
         return restauranteRepository.findAll();
     }
 
-    public Restaurante atualizar( final Restaurante restaurante) {
-        try {
-            return salvarRestaurante(restaurante);
-        } catch (EntidadeNaoEncontradaException e) {
-            throw new NegocioException(e.getMessage());
-        }
+    public Restaurante atualizar(final Restaurante restaurante) {
+        return salvarRestaurante(restaurante);
     }
 
     public void remover(final Long id) {
         try {
             restauranteRepository.deleteById(id);
             restauranteRepository.flush();
-        } catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoEncontradaException(
                     toString().formatted(MSG_RESTAURANTE_NAO_ENCONTRADO, id)
             );
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(
                     String.format(MSG_COZINHA_EM_USO, id)
             );
@@ -82,13 +75,13 @@ public class RestauranteService {
     }
 
     @Transactional
-    public void ativar(final Long id){
+    public void ativar(final Long id) {
         Restaurante restauranteAtual = buscarOuFalhar(id);
         restauranteAtual.ativar();
     }
 
     @Transactional
-    public void inativar(final Long id){
+    public void inativar(final Long id) {
         Restaurante restauranteAtual = buscarOuFalhar(id);
         restauranteAtual.inativar();
     }
@@ -98,8 +91,19 @@ public class RestauranteService {
                 () -> new EntidadeNaoEncontradaException(
                         String.format(MSG_RESTAURANTE_NAO_ENCONTRADO, id)));
     }
+
     @Transactional
     private Restaurante salvarRestaurante(final Restaurante restaurante) {
-        return restauranteRepository.save(restaurante);
+        try {
+            Long cozinhaId = restaurante.getCozinha().getId();
+            Long cidadeId = restaurante.getEndereco().getCidade().getId();
+            Cozinha cozinhaAtual = cozinhaService.buscar(cozinhaId);
+            Cidade cidadeAtual = cidadeService.buscar(cidadeId);
+            restaurante.setCozinha(cozinhaAtual);
+            restaurante.getEndereco().setCidade(cidadeAtual);
+            return restauranteRepository.save(restaurante);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 }

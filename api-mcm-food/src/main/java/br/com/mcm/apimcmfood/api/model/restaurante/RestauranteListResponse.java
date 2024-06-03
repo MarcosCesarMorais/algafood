@@ -1,6 +1,8 @@
 package br.com.mcm.apimcmfood.api.model.restaurante;
 
+import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaListResponse;
 import br.com.mcm.apimcmfood.api.model.cozinha.CozinhaResponse;
+import br.com.mcm.apimcmfood.api.model.endereco.EnderecoListResponse;
 
 import java.math.BigDecimal;
 
@@ -9,7 +11,8 @@ public class RestauranteListResponse {
     private Long id;
     private String nome;
     private BigDecimal taxaFrete;
-    private CozinhaResponse cozinha;
+    private String cozinha;
+    private EnderecoListResponse endereco;
 
     public Long getId() {
         return id;
@@ -35,11 +38,19 @@ public class RestauranteListResponse {
         this.taxaFrete = taxaFrete;
     }
 
-    public CozinhaResponse getCozinha() {
+    public String getCozinha() {
         return cozinha;
     }
 
-    public void setCozinha(CozinhaResponse cozinha) {
+    public void setCozinha(String cozinha) {
         this.cozinha = cozinha;
+    }
+
+    public EnderecoListResponse getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(EnderecoListResponse endereco) {
+        this.endereco = endereco;
     }
 }

@@ -26,7 +26,8 @@ public class FormaPagamentoResponseMapper {
     }
 
     public List<FormaPagamentoListResponse> toCollectionResponse(List<FormaPagamento> formaPagamentos) {
-        return formaPagamentos.stream()
+        return formaPagamentos
+                .stream()
                 .map(formaPagamento -> toListResponse(formaPagamento))
                 .collect(Collectors.toList());
     }

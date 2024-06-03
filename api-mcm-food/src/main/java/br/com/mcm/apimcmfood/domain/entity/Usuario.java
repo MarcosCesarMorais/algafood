@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="tb_usuario")
+@Table(name = "tb_usuario")
 public class Usuario {
 
     @Id
@@ -29,7 +29,8 @@ public class Usuario {
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataCadastro;
 
-    public Usuario(){}
+    public Usuario() {
+    }
 
     public Usuario(Long id, String nome, String email, String senha, LocalDateTime dataCadastro) {
         this.id = id;
@@ -37,6 +38,14 @@ public class Usuario {
         this.email = email;
         this.senha = senha;
         this.dataCadastro = dataCadastro;
+    }
+
+    public boolean senhaCoincideCom(String senha) {
+        return getSenha().equals(senha);
+    }
+
+    public boolean senhaNaoCoincideCom(String senha) {
+        return !senhaCoincideCom(senha);
     }
 
     public Long getId() {
@@ -77,7 +86,7 @@ public class Usuario {
 
     @ManyToMany
     @JoinTable(name = "tb_usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"),
-        inverseJoinColumns = @JoinColumn(name = "grupo_id"))
+            inverseJoinColumns = @JoinColumn(name = "grupo_id"))
     private List<Grupo> grupos = new ArrayList<>();
 
     public void setDataCadastro(LocalDateTime dataCadastro) {
