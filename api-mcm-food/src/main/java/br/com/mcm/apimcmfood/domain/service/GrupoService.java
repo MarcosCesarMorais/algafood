@@ -1,9 +1,11 @@
 package br.com.mcm.apimcmfood.domain.service;
 
 import br.com.mcm.apimcmfood.domain.entity.Grupo;
+import br.com.mcm.apimcmfood.domain.entity.Permissao;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.infrastructure.repository.GrupoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,9 +18,15 @@ public class GrupoService {
 
     private GrupoRepository grupoRepository;
 
+    private PermissaoService permissaoService;
 
-    public GrupoService(GrupoRepository grupoRepository) {
+
+    public GrupoService(
+            final GrupoRepository grupoRepository,
+            final PermissaoService permissaoService
+    ) {
         this.grupoRepository = Objects.requireNonNull(grupoRepository);
+        this.permissaoService = Objects.requireNonNull(permissaoService);
     }
 
     public Grupo adicionar(final Grupo grupo) {
@@ -39,6 +47,22 @@ public class GrupoService {
 
     public void remover(final Long id) {
         grupoRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void associarPermissao(final Long grupoId, final Long permissaoId) {
+        Grupo grupo = buscarOuFalhar(grupoId);
+        Permissao permissao = permissaoService.buscar(permissaoId);
+
+        grupo.associarPermissao(permissao);
+    }
+
+    @Transactional
+    public void desassociarPermissao(final Long grupoId, final Long permissaoId) {
+        Grupo grupo = buscarOuFalhar(grupoId);
+        Permissao permissao = permissaoService.buscar(permissaoId);
+
+        grupo.desassociarPermissao(permissao);
     }
 
     private Grupo buscarOuFalhar(Long id) {

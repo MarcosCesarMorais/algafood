@@ -14,9 +14,7 @@ import javax.validation.groups.Default;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_restaurante")
@@ -26,7 +24,7 @@ public class Restaurante {
     private Long id;
     @Column(nullable = false)
     private String nome;
-    @Column(name = "taxa_frete",nullable = false)
+    @Column(name = "taxa_frete", nullable = false)
     private BigDecimal taxaFrete;
     @CreationTimestamp
     @Column(nullable = false, columnDefinition = "datetime")
@@ -39,19 +37,22 @@ public class Restaurante {
 
     private Boolean ativo = Boolean.TRUE;
     @ManyToOne
-    @JoinColumn(name="cozinha_id",nullable = false)
+    @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
     @ManyToMany
-    @JoinTable(name="tb_restaurante_forma_pagamento",
-            joinColumns = @JoinColumn(name="restaurante_id"),
-            inverseJoinColumns = @JoinColumn(name="forma_pagamento_id")
+    @JoinTable(name = "tb_restaurante_forma_pagamento",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "forma_pagamento_id")
     )
-    private List<FormaPagamento> formasPagamento = new ArrayList<>();
+    private Set<FormaPagamento> formasPagamento = new HashSet<>();
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
-    public Restaurante(){}
+    private Boolean aberto = Boolean.FALSE;
 
-    public Restaurante(Long id, String nome, BigDecimal taxaFrete, OffsetDateTime dataCadastro, OffsetDateTime dataAtualizacao, Endereco endereco, Boolean ativo, Cozinha cozinha, List<FormaPagamento> formasPagamento, List<Produto> produtos) {
+    public Restaurante() {
+    }
+
+    public Restaurante(Long id, String nome, BigDecimal taxaFrete, OffsetDateTime dataCadastro, OffsetDateTime dataAtualizacao, Endereco endereco, Boolean ativo, Cozinha cozinha, Set<FormaPagamento> formasPagamento, List<Produto> produtos, Boolean aberto) {
         this.id = id;
         this.nome = nome;
         this.taxaFrete = taxaFrete;
@@ -62,14 +63,31 @@ public class Restaurante {
         this.cozinha = cozinha;
         this.formasPagamento = formasPagamento;
         this.produtos = produtos;
+        this.aberto = aberto;
     }
 
-    public void ativar(){
+    public void ativar() {
         setAtivo(true);
     }
 
-    public void inativar(){
+    public void inativar() {
         setAtivo(false);
+    }
+
+    public boolean desassociarFormaPagamento(FormaPagamento formaPagamento) {
+        return getFormasPagamento().remove(formaPagamento);
+    }
+
+    public boolean associarFormaPagamento(FormaPagamento formaPagamento) {
+        return getFormasPagamento().add(formaPagamento);
+    }
+
+    public void abrirRestaurante() {
+        setAberto(true);
+    }
+
+    public void fecharRestaurante() {
+        setAberto(false);
     }
 
     public Long getId() {
@@ -112,11 +130,11 @@ public class Restaurante {
         this.endereco = endereco;
     }
 
-    public List<FormaPagamento> getFormasPagamento() {
+    public Set<FormaPagamento> getFormasPagamento() {
         return formasPagamento;
     }
 
-    public void setFormasPagamento(List<FormaPagamento> formasPagamento) {
+    public void setFormasPagamento(Set<FormaPagamento> formasPagamento) {
         this.formasPagamento = formasPagamento;
     }
 
@@ -150,6 +168,14 @@ public class Restaurante {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public Boolean getAberto() {
+        return aberto;
+    }
+
+    public void setAberto(Boolean aberto) {
+        this.aberto = aberto;
     }
 
     @Override

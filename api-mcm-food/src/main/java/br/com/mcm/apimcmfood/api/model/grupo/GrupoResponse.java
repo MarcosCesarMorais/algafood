@@ -3,6 +3,7 @@ package br.com.mcm.apimcmfood.api.model.grupo;
 import br.com.mcm.apimcmfood.api.model.permissao.PermissaoResponse;
 
 import java.util.List;
+import java.util.Set;
 
 public class GrupoResponse {
 
@@ -10,7 +11,7 @@ public class GrupoResponse {
 
     private String nome;
 
-    private List<PermissaoResponse> permissoes;
+    private Set<PermissaoResponse> permissoes;
 
     public Long getId() {
         return id;
@@ -28,11 +29,11 @@ public class GrupoResponse {
         this.nome = nome;
     }
 
-    public List<PermissaoResponse> getPermissoes() {
+    public Set<PermissaoResponse> getPermissoes() {
         return permissoes;
     }
 
-    public void setPermissoes(List<PermissaoResponse> permissoes) {
+    public void setPermissoes(Set<PermissaoResponse> permissoes) {
         this.permissoes = permissoes;
     }
 }

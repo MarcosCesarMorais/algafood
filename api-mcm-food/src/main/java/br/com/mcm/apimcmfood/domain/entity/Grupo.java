@@ -1,12 +1,10 @@
 package br.com.mcm.apimcmfood.domain.entity;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
-@Table(name="tb_grupo")
+@Table(name = "tb_grupo")
 public class Grupo {
 
     @Id
@@ -19,14 +17,23 @@ public class Grupo {
     @ManyToMany
     @JoinTable(name = "tb_grupo_permissao", joinColumns = @JoinColumn(name = "grupo_id"),
             inverseJoinColumns = @JoinColumn(name = "permissao_id"))
-    private List<Permissao> permissoes = new ArrayList<>();
+    private Set<Permissao> permissoes = new HashSet<>();
 
-    public Grupo(){}
+    public Grupo() {
+    }
 
-    public Grupo(Long id, String nome, List<Permissao> permissoes) {
+    public Grupo(Long id, String nome, Set<Permissao> permissoes) {
         this.id = id;
         this.nome = nome;
         this.permissoes = permissoes;
+    }
+
+    public boolean associarPermissao(final Permissao permissao) {
+        return getPermissoes().add(permissao);
+    }
+
+    public boolean desassociarPermissao(final Permissao permissao) {
+        return getPermissoes().remove(permissao);
     }
 
     public Long getId() {
@@ -45,11 +52,11 @@ public class Grupo {
         this.nome = nome;
     }
 
-    public List<Permissao> getPermissoes() {
+    public Set<Permissao> getPermissoes() {
         return permissoes;
     }
 
-    public void setPermissoes(List<Permissao> permissoes) {
+    public void setPermissoes(Set<Permissao> permissoes) {
         this.permissoes = permissoes;
     }
 

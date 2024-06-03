@@ -24,3 +24,19 @@ foreign key (grupo_id) references tb_grupo (id);
 
 alter table tb_usuario_grupo add constraint fk_tb_usuario_grupo_tb_usuario
 foreign key (usuario_id) references tb_usuario (id);
+
+alter table tb_restaurante_usuario_responsavel add constraint fk_restaurante_usuario_restaurante
+foreign key (restaurante_id) references tb_restaurante (id);
+
+alter table tb_restaurante_usuario_responsavel add constraint fk_restaurante_usuario_usuario
+foreign key (usuario_id) references tb_usuario (id);
+
+alter table tb_pedido
+add constraint fk_tb_pedido_tb_endereco_cidade foreign key (endereco_cidade_id) references tb_cidade (id),
+add constraint fk_tb_pedido_tb_restaurante foreign key (restaurante_id) references tb_restaurante (id),
+add constraint fk_tb_pedido_tb_usuario_cliente foreign key (usuario_cliente_id) references tb_usuario (id),
+add constraint fk_tb_pedido_tb_forma_pagamento foreign key (forma_pagamento_id) references tb_forma_pagamento (id);
+
+alter table tb_item_pedido
+add constraint fk_tb_item_pedido_tb_pedido foreign key (pedido_id) references tb_pedido (id),
+add constraint fk_tb_item_pedido_tb_produto foreign key (produto_id) references tb_produto (id);

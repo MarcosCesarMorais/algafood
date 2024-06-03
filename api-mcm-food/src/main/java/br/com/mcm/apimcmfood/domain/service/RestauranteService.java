@@ -3,6 +3,7 @@ package br.com.mcm.apimcmfood.domain.service;
 import br.com.mcm.apimcmfood.api.model.restaurante.mapper.RestauranteRequestMapper;
 import br.com.mcm.apimcmfood.domain.entity.Cidade;
 import br.com.mcm.apimcmfood.domain.entity.Cozinha;
+import br.com.mcm.apimcmfood.domain.entity.FormaPagamento;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
@@ -27,6 +28,8 @@ public class RestauranteService {
     private CozinhaService cozinhaService;
     private CidadeService cidadeService;
 
+    private FormaPagamentoService formaPagamentoService;
+
     private static final String MSG_RESTAURANTE_NAO_ENCONTRADO
             = "Não existe um cadastro de restaurante com código %d";
 
@@ -36,13 +39,19 @@ public class RestauranteService {
     private static final String MSG_COZINHA_EM_USO =
             "Não é possível remover o restaurante com o código %d, pois está associada a uma ou mais cozinhas.";
 
-    public RestauranteService(final RestauranteRepository restauranteRepository, final CozinhaService cozinhaService, CidadeService cidadeService) {
+    public RestauranteService(
+            final RestauranteRepository restauranteRepository,
+            final CozinhaService cozinhaService,
+            final CidadeService cidadeService,
+            final FormaPagamentoService formaPagamentoService
+    ) {
         this.restauranteRepository = Objects.requireNonNull(restauranteRepository);
         this.cozinhaService = Objects.requireNonNull(cozinhaService);
         this.cidadeService = Objects.requireNonNull(cidadeService);
+        this.formaPagamentoService = Objects.requireNonNull(formaPagamentoService);
     }
 
-    
+
     public Restaurante adicionar(final Restaurante restaurante) {
         return salvarRestaurante(restaurante);
     }
@@ -84,6 +93,34 @@ public class RestauranteService {
     public void inativar(final Long id) {
         Restaurante restauranteAtual = buscarOuFalhar(id);
         restauranteAtual.inativar();
+    }
+
+    @Transactional
+    public void desassociarFormaPagamento(final Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+
+        restaurante.desassociarFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void associarFormaPagamento(final Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+
+        restaurante.associarFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void abrirRestaurante(final Long id) {
+        Restaurante restauranteAtual = buscarOuFalhar(id);
+        restauranteAtual.abrirRestaurante();
+    }
+
+    @Transactional
+    public void fecharRestaurante(final Long id) {
+        Restaurante restauranteAtual = buscarOuFalhar(id);
+        restauranteAtual.fecharRestaurante();
     }
 
     private Restaurante buscarOuFalhar(final Long id) {

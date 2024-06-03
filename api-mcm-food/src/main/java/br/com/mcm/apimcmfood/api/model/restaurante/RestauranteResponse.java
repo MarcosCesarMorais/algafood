@@ -13,6 +13,8 @@ public class RestauranteResponse {
     private Boolean ativo;
     private EnderecoResponse endereco;
 
+    private Boolean aberto;
+
     public Long getId() {
         return id;
     }
@@ -59,5 +61,13 @@ public class RestauranteResponse {
 
     public void setEndereco(EnderecoResponse endereco) {
         this.endereco = endereco;
+    }
+
+    public Boolean getAberto() {
+        return aberto;
+    }
+
+    public void setAberto(Boolean aberto) {
+        this.aberto = aberto;
     }
 }

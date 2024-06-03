@@ -1,13 +1,13 @@
 package br.com.mcm.apimcmfood.api.model.formaPagamento.mapper;
 
 import br.com.mcm.apimcmfood.api.model.formaPagamento.FormaPagamentoListResponse;
-import br.com.mcm.apimcmfood.api.model.formaPagamento.FormaPagamentoRequest;
 import br.com.mcm.apimcmfood.api.model.formaPagamento.FormaPagamentoResponse;
 import br.com.mcm.apimcmfood.domain.entity.FormaPagamento;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +25,7 @@ public class FormaPagamentoResponseMapper {
         return modelMapper.map(formaPagamento, FormaPagamentoListResponse.class);
     }
 
-    public List<FormaPagamentoListResponse> toCollectionResponse(List<FormaPagamento> formaPagamentos) {
+    public List<FormaPagamentoListResponse> toCollectionResponse(Collection<FormaPagamento> formaPagamentos) {
         return formaPagamentos
                 .stream()
                 .map(formaPagamento -> toListResponse(formaPagamento))

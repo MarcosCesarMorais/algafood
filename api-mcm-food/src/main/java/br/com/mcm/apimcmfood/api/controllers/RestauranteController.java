@@ -67,13 +67,25 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void ativar(final @PathVariable("restauranteId") Long id){
+    public void ativar(final @PathVariable("restauranteId") Long id) {
         restauranteService.ativar(id);
     }
 
     @DeleteMapping("/{restauranteId}/ativo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void inativar(final @PathVariable("restauranteId") Long id){
+    public void inativar(final @PathVariable("restauranteId") Long id) {
         restauranteService.inativar(id);
+    }
+
+    @PutMapping("/{restauranteId}/abertura")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void abrirRestaurante(final @PathVariable("restauranteId") Long id) {
+        restauranteService.abrirRestaurante(id);
+    }
+
+    @PutMapping("/{restauranteId}/fechamento")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void fecharRestaurante(final @PathVariable("restauranteId") Long id) {
+        restauranteService.fecharRestaurante(id);
     }
 }
