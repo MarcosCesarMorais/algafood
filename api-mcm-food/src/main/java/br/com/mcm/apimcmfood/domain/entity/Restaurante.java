@@ -47,12 +47,18 @@ public class Restaurante {
     private Set<FormaPagamento> formasPagamento = new HashSet<>();
     @OneToMany(mappedBy = "restaurante")
     private List<Produto> produtos = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "tb_restaurante_usuario_responsavel",
+            joinColumns = @JoinColumn(name = "restaurante_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+    private Set<Usuario> responsaveis = new HashSet<>();
     private Boolean aberto = Boolean.FALSE;
 
     public Restaurante() {
     }
 
-    public Restaurante(Long id, String nome, BigDecimal taxaFrete, OffsetDateTime dataCadastro, OffsetDateTime dataAtualizacao, Endereco endereco, Boolean ativo, Cozinha cozinha, Set<FormaPagamento> formasPagamento, List<Produto> produtos, Boolean aberto) {
+    public Restaurante(Long id, String nome, BigDecimal taxaFrete, OffsetDateTime dataCadastro, OffsetDateTime dataAtualizacao, Endereco endereco, Boolean ativo, Cozinha cozinha, Set<FormaPagamento> formasPagamento, List<Produto> produtos, Set<Usuario> responsaveis, Boolean aberto) {
         this.id = id;
         this.nome = nome;
         this.taxaFrete = taxaFrete;
@@ -63,6 +69,7 @@ public class Restaurante {
         this.cozinha = cozinha;
         this.formasPagamento = formasPagamento;
         this.produtos = produtos;
+        this.responsaveis = responsaveis;
         this.aberto = aberto;
     }
 
@@ -74,12 +81,20 @@ public class Restaurante {
         setAtivo(false);
     }
 
+    public boolean associarFormaPagamento(FormaPagamento formaPagamento) {
+        return getFormasPagamento().add(formaPagamento);
+    }
+
     public boolean desassociarFormaPagamento(FormaPagamento formaPagamento) {
         return getFormasPagamento().remove(formaPagamento);
     }
 
-    public boolean associarFormaPagamento(FormaPagamento formaPagamento) {
-        return getFormasPagamento().add(formaPagamento);
+    public boolean associarUsuarioResponsavel(Usuario usuario) {
+        return getResponsaveis().add(usuario);
+    }
+
+    public boolean desassociarUsuarioResponsavel(Usuario usuario) {
+        return getResponsaveis().remove(usuario);
     }
 
     public void abrirRestaurante() {
@@ -172,6 +187,14 @@ public class Restaurante {
 
     public Boolean getAberto() {
         return aberto;
+    }
+
+    public Set<Usuario> getResponsaveis() {
+        return responsaveis;
+    }
+
+    public void setResponsaveis(Set<Usuario> responsaveis) {
+        this.responsaveis = responsaveis;
     }
 
     public void setAberto(Boolean aberto) {

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name="tb_pedido")
+@Table(name = "tb_pedido")
 public class Pedido {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,6 +20,7 @@ public class Pedido {
     private BigDecimal valorTotal;
     @Embedded
     private Endereco enderecoEntrega;
+    @Enumerated(EnumType.STRING)
     private StatusPedido status;
     @CreationTimestamp
     private LocalDateTime dataCriacao;

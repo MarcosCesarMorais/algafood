@@ -10,10 +10,6 @@ public class RestauranteListResponse {
 
     private Long id;
     private String nome;
-    private BigDecimal taxaFrete;
-    private String cozinha;
-    private EnderecoListResponse endereco;
-
     public Long getId() {
         return id;
     }
@@ -30,27 +26,4 @@ public class RestauranteListResponse {
         this.nome = nome;
     }
 
-    public BigDecimal getTaxaFrete() {
-        return taxaFrete;
-    }
-
-    public void setTaxaFrete(BigDecimal taxaFrete) {
-        this.taxaFrete = taxaFrete;
-    }
-
-    public String getCozinha() {
-        return cozinha;
-    }
-
-    public void setCozinha(String cozinha) {
-        this.cozinha = cozinha;
-    }
-
-    public EnderecoListResponse getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(EnderecoListResponse endereco) {
-        this.endereco = endereco;
-    }
 }

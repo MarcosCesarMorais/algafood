@@ -6,6 +6,8 @@ import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteListResponse;
 import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteRequest;
 import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteResponse;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
+import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
+import br.com.mcm.apimcmfood.domain.exception.NegocioException;
 import br.com.mcm.apimcmfood.domain.service.RestauranteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,10 +79,30 @@ public class RestauranteController {
         restauranteService.inativar(id);
     }
 
+    @PutMapping("/ativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void ativarMultiplos(final @RequestBody List<Long> restauranteIds) {
+        restauranteService.ativar(restauranteIds);
+    }
+
+    @DeleteMapping("/ativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void inativarMultiplos(final @RequestBody List<Long> restauranteIds) {
+        try {
+            restauranteService.inativar(restauranteIds);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
+    }
+
     @PutMapping("/{restauranteId}/abertura")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void abrirRestaurante(final @PathVariable("restauranteId") Long id) {
-        restauranteService.abrirRestaurante(id);
+        try {
+            restauranteService.abrirRestaurante(id);
+        } catch (EntidadeNaoEncontradaException e) {
+            throw new NegocioException(e.getMessage());
+        }
     }
 
     @PutMapping("/{restauranteId}/fechamento")

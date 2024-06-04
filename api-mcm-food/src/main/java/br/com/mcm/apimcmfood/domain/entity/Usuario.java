@@ -4,9 +4,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "tb_usuario")
@@ -29,15 +27,21 @@ public class Usuario {
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataCadastro;
 
+    @ManyToMany
+    @JoinTable(name = "tb_usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "grupo_id"))
+    private Set<Grupo> grupos = new HashSet<>();
+
     public Usuario() {
     }
 
-    public Usuario(Long id, String nome, String email, String senha, LocalDateTime dataCadastro) {
+    public Usuario(Long id, String nome, String email, String senha, LocalDateTime dataCadastro, Set<Grupo> grupos) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.dataCadastro = dataCadastro;
+        this.grupos = grupos;
     }
 
     public boolean senhaCoincideCom(String senha) {
@@ -46,6 +50,14 @@ public class Usuario {
 
     public boolean senhaNaoCoincideCom(String senha) {
         return !senhaCoincideCom(senha);
+    }
+
+    public void associarGrupo(final Grupo grupo) {
+        getGrupos().add(grupo);
+    }
+
+    public void desassociarGrupo(final Grupo grupo) {
+        getGrupos().remove(grupo);
     }
 
     public Long getId() {
@@ -84,13 +96,16 @@ public class Usuario {
         return dataCadastro;
     }
 
-    @ManyToMany
-    @JoinTable(name = "tb_usuario_grupo", joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "grupo_id"))
-    private List<Grupo> grupos = new ArrayList<>();
-
     public void setDataCadastro(LocalDateTime dataCadastro) {
         this.dataCadastro = dataCadastro;
+    }
+
+    public Set<Grupo> getGrupos() {
+        return grupos;
+    }
+
+    public void setGrupos(Set<Grupo> grupos) {
+        this.grupos = grupos;
     }
 
     @Override

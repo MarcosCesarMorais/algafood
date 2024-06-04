@@ -1,5 +1,6 @@
 package br.com.mcm.apimcmfood.domain.service;
 
+import br.com.mcm.apimcmfood.domain.entity.Grupo;
 import br.com.mcm.apimcmfood.domain.entity.Usuario;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
@@ -20,10 +21,15 @@ public class UsuarioService {
             = "Não existe um cadastro de usuário com código %d";
 
     private UsuarioRepository usuarioRepository;
+    private GrupoService grupoService;
 
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(
+            final UsuarioRepository usuarioRepository,
+            final GrupoService grupoService
+    ) {
         this.usuarioRepository = Objects.requireNonNull(usuarioRepository);
+        this.grupoService = Objects.requireNonNull(grupoService);
     }
 
     public Usuario adicionar(final Usuario usuario) {
@@ -67,6 +73,22 @@ public class UsuarioService {
         usuario.setSenha(novaSenha);
     }
 
+    @Transactional
+    public void associarGrupo(final Long usuariId, final Long grupoId) {
+        Usuario usuario = buscarOuFalhar(usuariId);
+        Grupo grupo = grupoService.buscar(grupoId);
+
+        usuario.associarGrupo(grupo);
+    }
+
+    @Transactional
+    public void desassociarGrupo(final Long usuarioId, final Long grupoId) {
+        Usuario usuario = buscarOuFalhar(usuarioId);
+        Grupo grupo = grupoService.buscar(grupoId);
+
+        usuario.desassociarGrupo(grupo);
+    }
+
     private Usuario buscarOuFalhar(final Long id) {
         return usuarioRepository.findById(id).orElseThrow(
                 () -> new EntidadeNaoEncontradaException(
@@ -77,7 +99,7 @@ public class UsuarioService {
     private Usuario salvar(final Usuario usuario) {
         usuarioRepository.detach(usuario);
         var usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
-        if(usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)){
+        if (usuarioExistente.isPresent() && !usuarioExistente.get().equals(usuario)) {
             throw new NegocioException(
                     String.format("já existe um usuário cadastrado com o e-mail %s", usuario.getEmail())
             );

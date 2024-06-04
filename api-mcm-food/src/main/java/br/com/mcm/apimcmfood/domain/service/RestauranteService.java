@@ -1,12 +1,9 @@
 package br.com.mcm.apimcmfood.domain.service;
 
 import br.com.mcm.apimcmfood.api.model.restaurante.mapper.RestauranteRequestMapper;
-import br.com.mcm.apimcmfood.domain.entity.Cidade;
-import br.com.mcm.apimcmfood.domain.entity.Cozinha;
-import br.com.mcm.apimcmfood.domain.entity.FormaPagamento;
+import br.com.mcm.apimcmfood.domain.entity.*;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeEmUsoException;
 import br.com.mcm.apimcmfood.domain.exception.EntidadeNaoEncontradaException;
-import br.com.mcm.apimcmfood.domain.entity.Restaurante;
 import br.com.mcm.apimcmfood.domain.exception.NegocioException;
 import br.com.mcm.apimcmfood.infrastructure.repository.RestauranteRepository;
 import org.hibernate.exception.ConstraintViolationException;
@@ -22,14 +19,6 @@ import java.util.Objects;
 @Service
 public class RestauranteService {
 
-    @Autowired
-    private RestauranteRequestMapper restauranteRequestMapper;
-    private RestauranteRepository restauranteRepository;
-    private CozinhaService cozinhaService;
-    private CidadeService cidadeService;
-
-    private FormaPagamentoService formaPagamentoService;
-
     private static final String MSG_RESTAURANTE_NAO_ENCONTRADO
             = "Não existe um cadastro de restaurante com código %d";
 
@@ -39,16 +28,27 @@ public class RestauranteService {
     private static final String MSG_COZINHA_EM_USO =
             "Não é possível remover o restaurante com o código %d, pois está associada a uma ou mais cozinhas.";
 
+
+    @Autowired
+    private RestauranteRequestMapper restauranteRequestMapper;
+    private RestauranteRepository restauranteRepository;
+    private CozinhaService cozinhaService;
+    private CidadeService cidadeService;
+    private FormaPagamentoService formaPagamentoService;
+    private UsuarioService usuarioService;
+
     public RestauranteService(
             final RestauranteRepository restauranteRepository,
             final CozinhaService cozinhaService,
             final CidadeService cidadeService,
-            final FormaPagamentoService formaPagamentoService
+            final FormaPagamentoService formaPagamentoService,
+            final UsuarioService usuarioService
     ) {
         this.restauranteRepository = Objects.requireNonNull(restauranteRepository);
         this.cozinhaService = Objects.requireNonNull(cozinhaService);
         this.cidadeService = Objects.requireNonNull(cidadeService);
         this.formaPagamentoService = Objects.requireNonNull(formaPagamentoService);
+        this.usuarioService = Objects.requireNonNull(usuarioService);
     }
 
 
@@ -96,11 +96,13 @@ public class RestauranteService {
     }
 
     @Transactional
-    public void desassociarFormaPagamento(final Long restauranteId, Long formaPagamentoId) {
-        Restaurante restaurante = buscarOuFalhar(restauranteId);
-        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+    public void ativar(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::ativar);
+    }
 
-        restaurante.desassociarFormaPagamento(formaPagamento);
+    @Transactional
+    public void inativar(List<Long> restauranteIds) {
+        restauranteIds.forEach(this::inativar);
     }
 
     @Transactional
@@ -109,6 +111,30 @@ public class RestauranteService {
         FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
 
         restaurante.associarFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void desassociarFormaPagamento(final Long restauranteId, Long formaPagamentoId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        FormaPagamento formaPagamento = formaPagamentoService.buscar(formaPagamentoId);
+
+        restaurante.desassociarFormaPagamento(formaPagamento);
+    }
+
+    @Transactional
+    public void associarUsuarioResponsavel(final Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        Usuario usuario = usuarioService.buscar(usuarioId);
+
+        restaurante.associarUsuarioResponsavel(usuario);
+    }
+
+    @Transactional
+    public void desassociarUsuarioResponsavel(final Long restauranteId, Long usuarioId) {
+        Restaurante restaurante = buscarOuFalhar(restauranteId);
+        Usuario usuario = usuarioService.buscar(usuarioId);
+
+        restaurante.desassociarUsuarioResponsavel(usuario);
     }
 
     @Transactional
