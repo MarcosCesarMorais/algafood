@@ -22,7 +22,7 @@ public class PedidoService {
             "Pedido de código %d não pode ser removido, pois está em uso";
 
     private static final String MSG_PEDIDO_NAO_ENCONTRADO =
-            "Não existe um cadastro de pedido com código %d";
+            "Não existe um cadastro de PedidoRequest com código %d";
 
     public PedidoService(PedidoRepository pedidoRepository) {
         this.pedidoRepository = pedidoRepository;

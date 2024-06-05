@@ -105,6 +105,14 @@ public class Restaurante {
         setAberto(false);
     }
 
+    public boolean aceitaFormaPagamento(FormaPagamento formaPagamento){
+        return getFormasPagamento().contains(formaPagamento);
+    }
+
+    public boolean naoAceitaFormaPagamento(FormaPagamento formaPagamento){
+        return !getFormasPagamento().contains(formaPagamento);
+    }
+
     public Long getId() {
         return id;
     }

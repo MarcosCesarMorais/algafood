@@ -10,6 +10,7 @@ public class RestauranteListResponse {
 
     private Long id;
     private String nome;
+    private String cozinha;
     public Long getId() {
         return id;
     }
@@ -26,4 +27,11 @@ public class RestauranteListResponse {
         this.nome = nome;
     }
 
+    public String getCozinha() {
+        return cozinha;
+    }
+
+    public void setCozinha(String cozinha) {
+        this.cozinha = cozinha;
+    }
 }

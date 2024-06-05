@@ -63,6 +63,20 @@ public class Pedido {
         this.itens = itens;
     }
 
+    public void calcularValorTotal() {
+        this.subtotal = getItens().stream()
+                .map(item -> item.getPrecoTotal())
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void definirFrete() {
+        setTaxaFrete(getRestaurante().getTaxaFrete());
+    }
+
+    public void atribuirPedidoAosItens() {
+        getItens().forEach(item -> item.setPedido(this));
+    }
+
     public Long getId() {
         return id;
     }
