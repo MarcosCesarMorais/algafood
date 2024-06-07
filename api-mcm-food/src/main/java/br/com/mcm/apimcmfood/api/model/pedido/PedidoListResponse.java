@@ -1,16 +1,13 @@
 package br.com.mcm.apimcmfood.api.model.pedido;
 
-import br.com.mcm.apimcmfood.api.model.endereco.EnderecoResponse;
-import br.com.mcm.apimcmfood.api.model.formaPagamento.FormaPagamentoResponse;
-import br.com.mcm.apimcmfood.api.model.itemPedido.ItemPedidoResponse;
 import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteListResponse;
 import br.com.mcm.apimcmfood.api.model.usuario.UsuarioResponse;
+import com.fasterxml.jackson.annotation.JsonFilter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.List;
-
-public class PedidoResponse {
+@JsonFilter("pedidoFilter")
+public class PedidoListResponse {
 
     private String codigo;
     private BigDecimal subtotal;
@@ -18,14 +15,8 @@ public class PedidoResponse {
     private BigDecimal valorTotal;
     private String status;
     private OffsetDateTime dataCriacao;
-    private OffsetDateTime dataConfirmacao;
-    private OffsetDateTime dataEntrega;
-    private OffsetDateTime dataCancelamento;
     private RestauranteListResponse restaurante;
     private UsuarioResponse cliente;
-    private FormaPagamentoResponse formaPagamento;
-    private EnderecoResponse enderecoEntrega;
-    private List<ItemPedidoResponse> itens;
 
     public String getCodigo() {
         return codigo;
@@ -75,30 +66,6 @@ public class PedidoResponse {
         this.dataCriacao = dataCriacao;
     }
 
-    public OffsetDateTime getDataConfirmacao() {
-        return dataConfirmacao;
-    }
-
-    public void setDataConfirmacao(OffsetDateTime dataConfirmacao) {
-        this.dataConfirmacao = dataConfirmacao;
-    }
-
-    public OffsetDateTime getDataEntrega() {
-        return dataEntrega;
-    }
-
-    public void setDataEntrega(OffsetDateTime dataEntrega) {
-        this.dataEntrega = dataEntrega;
-    }
-
-    public OffsetDateTime getDataCancelamento() {
-        return dataCancelamento;
-    }
-
-    public void setDataCancelamento(OffsetDateTime dataCancelamento) {
-        this.dataCancelamento = dataCancelamento;
-    }
-
     public RestauranteListResponse getRestaurante() {
         return restaurante;
     }
@@ -113,29 +80,5 @@ public class PedidoResponse {
 
     public void setCliente(UsuarioResponse cliente) {
         this.cliente = cliente;
-    }
-
-    public FormaPagamentoResponse getFormaPagamento() {
-        return formaPagamento;
-    }
-
-    public void setFormaPagamento(FormaPagamentoResponse formaPagamento) {
-        this.formaPagamento = formaPagamento;
-    }
-
-    public EnderecoResponse getEnderecoEntrega() {
-        return enderecoEntrega;
-    }
-
-    public void setEnderecoEntrega(EnderecoResponse enderecoEntrega) {
-        this.enderecoEntrega = enderecoEntrega;
-    }
-
-    public List<ItemPedidoResponse> getItens() {
-        return itens;
-    }
-
-    public void setItens(List<ItemPedidoResponse> itens) {
-        this.itens = itens;
     }
 }

@@ -1,8 +1,10 @@
-package br.com.mcm.apimcmfood.api.model.restaurante;
+package br.com.mcm.apimcmfood.api.model.produto;
 
-public class RestauranteResumidoResponse {
+public class ProdutoListResponse {
+
     private Long id;
     private String nome;
+    private String descricao;
 
     public Long getId() {
         return id;
@@ -18,5 +20,13 @@ public class RestauranteResumidoResponse {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 }

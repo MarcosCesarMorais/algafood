@@ -1,4 +1,4 @@
-package br.com.mcm.apimcmfood.api.controllers;
+package br.com.mcm.apimcmfood.api.controllers.restaurante;
 
 import br.com.mcm.apimcmfood.api.model.usuario.UsuarioListResponse;
 import br.com.mcm.apimcmfood.api.model.usuario.mapper.UsuarioResponseMapper;

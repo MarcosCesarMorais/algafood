@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name="tb_item_pedido")
+@Table(name = "tb_item_pedido")
 public class ItemPedido {
 
     @Id
@@ -21,16 +21,36 @@ public class ItemPedido {
     @JoinColumn(nullable = false)
     private Pedido pedido;
 
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Produto produto;
+
     public ItemPedido() {
     }
 
-    public ItemPedido(Long id, BigDecimal precoUnitario, BigDecimal precoTotal, Integer quantidade, String observacao, Pedido pedido) {
+    public ItemPedido(Long id, BigDecimal precoUnitario, BigDecimal precoTotal, Integer quantidade, String observacao, Pedido pedido, Produto produto) {
         this.id = id;
         this.precoUnitario = precoUnitario;
         this.precoTotal = precoTotal;
         this.quantidade = quantidade;
         this.observacao = observacao;
         this.pedido = pedido;
+        this.produto = produto;
+    }
+
+    public void calcularPrecoTotal() {
+        BigDecimal precoUnitario = this.getPrecoUnitario();
+        Integer quantidade = this.getQuantidade();
+
+        if (precoUnitario == null) {
+            precoUnitario = BigDecimal.ZERO;
+        }
+
+        if (quantidade == null) {
+            quantidade = 0;
+        }
+
+        this.setPrecoTotal(precoUnitario.multiply(new BigDecimal(quantidade)));
     }
 
     public Long getId() {
@@ -79,6 +99,14 @@ public class ItemPedido {
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
+    }
+
+    public Produto getProduto() {
+        return produto;
+    }
+
+    public void setProduto(Produto produto) {
+        this.produto = produto;
     }
 
     @Override

@@ -1,8 +1,10 @@
 package br.com.mcm.apimcmfood.infrastructure.config;
 
 import br.com.mcm.apimcmfood.api.model.endereco.EnderecoListResponse;
+import br.com.mcm.apimcmfood.api.model.itemPedido.ItemPedidoResquest;
 import br.com.mcm.apimcmfood.api.model.restaurante.RestauranteListResponse;
 import br.com.mcm.apimcmfood.domain.entity.Endereco;
+import br.com.mcm.apimcmfood.domain.entity.ItemPedido;
 import br.com.mcm.apimcmfood.domain.entity.Restaurante;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
@@ -12,10 +14,13 @@ import org.springframework.context.annotation.Configuration;
 public class ModelMapperConfig {
 
     @Bean
-    public ModelMapper modelMapper(){
+    public ModelMapper modelMapper() {
         var modelMapper = new ModelMapper();
         //modelMapper.createTypeMap(Restaurante.class, RestauranteModel.class)
 //			.addMapping(Restaurante::getTaxaFrete, RestauranteModel::setPrecoFrete);
+        modelMapper.createTypeMap(ItemPedidoResquest.class, ItemPedido.class)
+                .addMappings(mapper -> mapper.skip(ItemPedido::setId));
+
         var enderecoToEnderecoListResponse = modelMapper.createTypeMap(
                 Endereco.class, EnderecoListResponse.class);
 
