@@ -1,18 +1,9 @@
 package br.com.mcm.apimcmfood.domain.entity;
 
-import br.com.mcm.apimcmfood.domain.exception.groups.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
 

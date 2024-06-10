@@ -8,6 +8,8 @@ import br.com.mcm.apimcmfood.api.model.cozinha.mapper.CozinhaResponseMapper;
 import br.com.mcm.apimcmfood.domain.entity.Cozinha;
 import br.com.mcm.apimcmfood.domain.service.CozinhaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +45,8 @@ public class CozinhaController {
     }
 
     @GetMapping
-    public List<CozinhaListResponse> listar() {
-        return cozinhaResponseMapper.toCollectionResponse(cozinhaService.listar());
+    public Page<CozinhaListResponse> listar(Pageable pageable) {
+        return cozinhaResponseMapper.toPageableToResponse(cozinhaService.listar(pageable));
     }
 
     @GetMapping("/{cozinhaId}")

@@ -8,14 +8,19 @@ import br.com.mcm.apimcmfood.api.model.pedido.mapper.PedidoRequestMapper;
 import br.com.mcm.apimcmfood.api.model.pedido.mapper.PedidoResponseMapper;
 import br.com.mcm.apimcmfood.domain.service.pedido.EmissaoPedidoService;
 import br.com.mcm.apimcmfood.domain.entity.Pedido;
+import br.com.mcm.apimcmfood.infrastructure.repository.PedidoRepository;
 import br.com.mcm.apimcmfood.infrastructure.repository.filter.PedidoFilter;
-import br.com.mcm.apimcmfood.infrastructure.repository.spec.PedidoSpecification;
+import br.com.mcm.apimcmfood.utils.data.PageableTranslator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -27,16 +32,20 @@ public class PedidoController {
     private PedidoListResponseMapper pedidoListResponseMapper;
     private EmissaoPedidoService pedidoService;
 
+    private PedidoRepository pedidoRepository;
+
     public PedidoController(
             final PedidoRequestMapper pedidoRequestMapper,
             final EmissaoPedidoService pedidoService,
             final PedidoResponseMapper pedidoResponseMapper,
-            final PedidoListResponseMapper pedidoListResponseMapper
+            final PedidoListResponseMapper pedidoListResponseMapper,
+            final PedidoRepository pedidoRepository
     ) {
         this.pedidoRequestMapper = Objects.requireNonNull(pedidoRequestMapper);
         this.pedidoService = Objects.requireNonNull(pedidoService);
         this.pedidoResponseMapper = Objects.requireNonNull(pedidoResponseMapper);
         this.pedidoListResponseMapper = Objects.requireNonNull(pedidoListResponseMapper);
+        this.pedidoRepository = pedidoRepository;
     }
 
     @PostMapping
@@ -47,9 +56,10 @@ public class PedidoController {
     }
 
     @GetMapping
-    public List<PedidoListResponse> pesquisar(PedidoFilter filtro) {
-        List<Pedido> todosPedidos = pedidoService.pesquisar(filtro);
-        return pedidoListResponseMapper.toCollectionResponse(todosPedidos);
+    public Page<PedidoListResponse> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+        pageable = traduzirPageable(pageable);
+        Page<Pedido> todosPedidos = pedidoService.pesquisar(filtro, pageable);
+        return pedidoListResponseMapper.toPageableToResponse(todosPedidos);
     }
 
     @GetMapping("/{codigo}")
@@ -72,5 +82,20 @@ public class PedidoController {
         Pedido pedido = pedidoService.buscar(codigo);
         pedidoService.remover(pedido.getId());
         return ResponseEntity.noContent().build();
+    }
+
+    private Pageable traduzirPageable(Pageable apiPageable) {
+        var mapeamento = Map.of(
+                "codigo", "codigo",
+                "subtotal", "subtotal",
+                "taxaFrete", "taxaFrete",
+                "valorTotal", "valorTotal",
+                "dataCriacao", "dataCriacao",
+                "restaurante.nome", "restaurante.nome",
+                "restaurante.id", "restaurante.id",
+                "cliente.id", "cliente.id",
+                "cliente.nome", "cliente.nome"
+        );
+        return PageableTranslator.translate(apiPageable, mapeamento);
     }
 }

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-@JsonFilter("pedidoFilter")
 public class PedidoListResponse {
 
     private String codigo;

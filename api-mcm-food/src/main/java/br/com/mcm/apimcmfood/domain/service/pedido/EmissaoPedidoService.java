@@ -9,6 +9,8 @@ import br.com.mcm.apimcmfood.infrastructure.repository.PedidoRepository;
 import br.com.mcm.apimcmfood.infrastructure.repository.filter.PedidoFilter;
 import br.com.mcm.apimcmfood.infrastructure.repository.spec.PedidoSpecification;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,8 +70,8 @@ public class EmissaoPedidoService {
         return this.buscarOuFalhar(codigo);
     }
 
-    public List<Pedido> pesquisar(PedidoFilter filtro) {
-        return pedidoRepository.findAll(PedidoSpecification.usandoFiltro(filtro));
+    public Page<Pedido> pesquisar(PedidoFilter filtro, Pageable pageable) {
+        return pedidoRepository.findAll(PedidoSpecification.usandoFiltro(filtro),pageable);
     }
 
     public void remover(final Long id) {

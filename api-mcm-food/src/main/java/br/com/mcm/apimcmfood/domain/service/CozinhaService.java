@@ -7,6 +7,8 @@ import br.com.mcm.apimcmfood.infrastructure.repository.CozinhaRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,8 +42,8 @@ public class CozinhaService {
         );
     }
 
-    public List<Cozinha> listar() {
-        return cozinhaRepository.findAll();
+    public Page<Cozinha> listar(Pageable pageable) {
+        return cozinhaRepository.findAll(pageable);
     }
 
 

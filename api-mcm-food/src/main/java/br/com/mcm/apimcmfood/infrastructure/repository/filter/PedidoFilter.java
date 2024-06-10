@@ -1,12 +1,17 @@
 package br.com.mcm.apimcmfood.infrastructure.repository.filter;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
 import java.time.OffsetDateTime;
 
 public class PedidoFilter {
 
     private Long clienteId;
-    private Long restauratneId;
+    private Long restaurateId;
+    @DateTimeFormat(iso = ISO.DATE_TIME)
     private OffsetDateTime dataCriacaoInicio;
+    @DateTimeFormat(iso = ISO.DATE_TIME)
     private OffsetDateTime dataCriacaoFim;
 
     public Long getClienteId() {
@@ -17,12 +22,12 @@ public class PedidoFilter {
         this.clienteId = clienteId;
     }
 
-    public Long getRestauratneId() {
-        return restauratneId;
+    public Long getRestaurateId() {
+        return restaurateId;
     }
 
-    public void setRestauratneId(Long restauratneId) {
-        this.restauratneId = restauratneId;
+    public void setRestaurateId(Long restaurateId) {
+        this.restaurateId = restaurateId;
     }
 
     public OffsetDateTime getDataCriacaoInicio() {

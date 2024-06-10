@@ -12,10 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.NestedRuntimeException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         List<Field> fields = null;
         String message = ex.getMessage();
 
-        var erroPadrao = instanciaErroPadrao(status, type, message,fields);
+        var erroPadrao = instanciaErroPadrao(status, type, message, fields);
         return handleExceptionInternal(ex, erroPadrao, headers, status, request);
     }
 
@@ -58,14 +62,34 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             WebRequest request
     ) {
 
+        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
+                                                         WebRequest request) {
+
+        return handleValidationInternal(ex, headers, status, request, ex.getBindingResult());
+    }
+
+    private ResponseEntity<Object> handleValidationInternal(
+            Exception ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request,
+            BindingResult bindingResult
+    ) {
         ErroPadraoType type = ErroPadraoType.DADOS_INVALIDOS;
         String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
-        var bindingResults = ex.getBindingResult();
-        List<Field> fields = bindingResults.getFieldErrors().stream()
+        List<Field> fields = bindingResult.getAllErrors().stream()
                 .map(fieldError -> {
                     String message = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+                    String name = fieldError.getObjectName();
+                    if (fieldError instanceof FieldError) {
+                        name = ((FieldError) fieldError).getField();
+                    }
                     return new Field(
-                            fieldError.getField(),
+                            name,
                             message);
                 })
                 .collect(Collectors.toList());
@@ -141,7 +165,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             );
         }
         return super.handleExceptionInternal(ex, body, headers, status, request);
-    }   @ExceptionHandler(EntidadeNaoEncontradaException.class)
+    }
+
+    @ExceptionHandler(EntidadeNaoEncontradaException.class)
     public ResponseEntity<?> entidadeNaoEncontradaException(
             final EntidadeNaoEncontradaException ex,
             WebRequest request
@@ -197,24 +223,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), HttpStatus.CONFLICT, request);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleUncaught(
-            Exception ex,
-            WebRequest request
-    ) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ErroPadraoType type = ErroPadraoType.ERRO_DE_SISTEMA;
-        String detail = "Ocorreu um erro interno inesperado no sistema. "
-                + "Tente novamente e se o problema persistir, entre em contato "
-                + "com o administrador do sistema.";
-        List<Field> fields = null;
-        ex.printStackTrace();
-        var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
-        return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
-    }
-
-
-
     private ResponseEntity<Object> handleMethodArgumentTypeMismatch(
             MethodArgumentTypeMismatchException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request
@@ -243,6 +251,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, erroPadrao, headers, status, request);
 
 
+    }
+
+    protected ResponseEntity<Object> handlePropertyReferenceException(
+            PropertyReferenceException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request
+    ) {
+        ErroPadraoType type = ErroPadraoType.MENSAGEM_INCOMPREENSIVEL;
+        String detail = String.format("A propriedade '%s' não existe. "
+                + "Corrija ou remova essa propriedade e tente novamente.", ex.getPropertyName());
+        List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
+        return handleExceptionInternal(ex, erroPadrao, headers, status, request);
     }
 
     private ResponseEntity<Object> handleInvalidFormatException(
@@ -291,6 +313,23 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         String detail = String.format("O recurso '%s', que você tentou acessar, é inexistente.",
                 ex.getRequestURL());
         List<Field> fields = null;
+        var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
+        return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(
+            Exception ex,
+            WebRequest request
+    ) {
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ErroPadraoType type = ErroPadraoType.ERRO_DE_SISTEMA;
+        String detail = "Ocorreu um erro interno inesperado no sistema. "
+                + "Tente novamente e se o problema persistir, entre em contato "
+                + "com o administrador do sistema.";
+        List<Field> fields = null;
+        ex.printStackTrace();
         var erroPadrao = instanciaErroPadrao(status, type, detail, fields);
         return handleExceptionInternal(ex, erroPadrao, new HttpHeaders(), status, request);
     }
