@@ -1,11 +1,11 @@
-package br.com.mcm.apimcmfood.infrastructure.repository.filter;
+package br.com.mcm.apimcmfood.domain.filtros;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import java.time.OffsetDateTime;
 
-public class PedidoFilter {
+public class FiltroPedido {
 
     private Long clienteId;
     private Long restaurateId;

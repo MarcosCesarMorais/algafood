@@ -9,7 +9,7 @@ import br.com.mcm.apimcmfood.api.model.pedido.mapper.PedidoResponseMapper;
 import br.com.mcm.apimcmfood.domain.service.pedido.EmissaoPedidoService;
 import br.com.mcm.apimcmfood.domain.entity.Pedido;
 import br.com.mcm.apimcmfood.infrastructure.repository.PedidoRepository;
-import br.com.mcm.apimcmfood.infrastructure.repository.filter.PedidoFilter;
+import br.com.mcm.apimcmfood.domain.filtros.FiltroPedido;
 import br.com.mcm.apimcmfood.utils.data.PageableTranslator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -56,7 +55,7 @@ public class PedidoController {
     }
 
     @GetMapping
-    public Page<PedidoListResponse> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
+    public Page<PedidoListResponse> pesquisar(FiltroPedido filtro, @PageableDefault(size = 10) Pageable pageable) {
         pageable = traduzirPageable(pageable);
         Page<Pedido> todosPedidos = pedidoService.pesquisar(filtro, pageable);
         return pedidoListResponseMapper.toPageableToResponse(todosPedidos);

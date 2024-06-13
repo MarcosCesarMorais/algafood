@@ -1,17 +1,15 @@
 package br.com.mcm.apimcmfood.infrastructure.repository.spec;
 
 import br.com.mcm.apimcmfood.domain.entity.Pedido;
-import br.com.mcm.apimcmfood.domain.entity.Restaurante;
-import br.com.mcm.apimcmfood.infrastructure.repository.filter.PedidoFilter;
+import br.com.mcm.apimcmfood.domain.filtros.FiltroPedido;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 public class PedidoSpecification {
 
-    public static Specification<Pedido> usandoFiltro(PedidoFilter filtro) {
+    public static Specification<Pedido> usandoFiltro(FiltroPedido filtro) {
         return (root, query, builder) -> {
             if (Pedido.class.equals(query.getResultType())) {
                 root.fetch("restaurante").fetch("cozinha");
