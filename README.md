@@ -1,6 +1,9 @@
 # Sistema de Delivery de Comida 🛵 🍝
 
-Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o framework Spring.
+Este projeto é uma aplicação de delivery de comida desenvolvida em:
+
+- ☕️ Java
+- 🌱 Spring Framework
 
 ## Funcionalidades Principais 🎬
 
