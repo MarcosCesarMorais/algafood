@@ -24,7 +24,22 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
   
 - **Spring Security**: Utilizado para autenticação, autorização e segurança da aplicação.
   
+- **MySQL Database**: Utilizado como sistema de gerenciamento de banco de dados para persistência dos dados do sistema.
+  
 - **H2 Database**: Banco de dados em memória utilizado para desenvolvimento e testes.
+
+![Java Badge](https://img.shields.io/badge/Java-007396.svg?style=for-the-badge&logo=java&logoColor=white)
+![Maven Badge](https://img.shields.io/badge/Maven-C71A36.svg?style=for-the-badge&logo=apache-maven&logoColor=white)
+![Spring Boot Badge](https://img.shields.io/badge/Spring%20Boot-6DB33F.svg?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Spring Security Badge](https://img.shields.io/badge/Spring_Security-6DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![JPA Badge](https://img.shields.io/badge/JPA-000000.svg?style=for-the-badge&logo=java&logoColor=white)
+![Docker Badge](https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
+![MySQL Badge](https://img.shields.io/badge/MySQL-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
+![Flyway Badge](https://img.shields.io/badge/Flyway-6DB33F.svg?style=for-the-badge&logo=flyway&logoColor=white)
+![AWS Badge](https://img.shields.io/badge/AWS-232F3E.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![GitFlow Badge](https://img.shields.io/badge/GitFlow-000000.svg?style=for-the-badge&logo=git&logoColor=white)
+
+
 
 ## Configuração do Ambiente de Desenvolvimento
 
