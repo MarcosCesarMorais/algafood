@@ -14,7 +14,7 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
 
 ## Tecnologias Utilizadas
 
-- **Java 11**: Linguagem de programação utilizada para desenvolver a aplicação.
+- **Java 17**: Linguagem de programação utilizada para desenvolver a aplicação.
   
 - **Spring Boot**: Framework utilizado para desenvolvimento rápido e fácil de aplicações Spring.
   
@@ -29,10 +29,11 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
 ## Configuração do Ambiente de Desenvolvimento
 
 1. **Pré-requisitos**:
-   - JDK 11: Instale o Java Development Kit (JDK) versão 11.
+   - JDK 17: Instale o Java Development Kit (JDK) versão 17.
    - Maven: Ferramenta de automação de compilação e gerenciamento de dependências.
 
 2. **Clonar o Repositório**:
    ```bash
-   git clone https://github.com/seu-usuario/sistema-delivery.git
+   git clone https://github.com/MarcosCesarMorais/mcmfood.git
    cd sistema-delivery
+  
