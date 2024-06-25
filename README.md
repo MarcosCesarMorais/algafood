@@ -41,6 +41,9 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
 ![AWS Badge](https://img.shields.io/badge/AWS-232F3E.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![GitFlow Badge](https://img.shields.io/badge/GitFlow-000000.svg?style=for-the-badge&logo=git&logoColor=white)
 
+![Tecnologia Badge](https://img.shields.io/badge/Tecnologia-4285F4.svg?style=for-the-badge&logo=font-awesome&logoColor=white)
+
+
 
 
 ## Configuração do Ambiente de Desenvolvimento
