@@ -52,5 +52,5 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
 2. **Clonar o Repositório**:
    ```bash
    git clone https://github.com/MarcosCesarMorais/mcmfood.git
-   cd sistema-delivery
+   cd mcmfood
   
