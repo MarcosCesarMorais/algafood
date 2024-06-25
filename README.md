@@ -33,7 +33,7 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
 ![Spring Boot Badge](https://img.shields.io/badge/Spring%20Boot-6DB33F.svg?style=for-the-badge&logo=spring-boot&logoColor=white)
 ![Spring Data JPA Badge](https://img.shields.io/badge/Spring_Data_JPA-6DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![Spring Security Badge](https://img.shields.io/badge/Spring_Security-6DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
-![JPA Badge](https://img.shields.io/badge/JPA-000000.svg?style=for-the-badge&logo=java&logoColor=white)
+![Swagger Badge](https://img.shields.io/badge/Swagger-85EA2D.svg?style=for-the-badge&logo=swagger&logoColor=white)
 ![Docker Badge](https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white)
 ![MySQL Badge](https://img.shields.io/badge/MySQL-4479A1.svg?style=for-the-badge&logo=mysql&logoColor=white)
 ![H2 Database Badge](https://img.shields.io/badge/H2-1E90FF.svg?style=for-the-badge&logo=h2&logoColor=white)
