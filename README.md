@@ -1,8 +1,8 @@
-# Sistema de Delivery de Comida
+# Sistema de Delivery de Comida 🛵 🍝
 
 Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o framework Spring.
 
-## Funcionalidades Principais
+## Funcionalidades Principais 🎬
 
 - **Cadastro de Restaurantes**: Os restaurantes podem se cadastrar na plataforma, informando seu nome, localização e tipo de cozinha.
   
@@ -12,7 +12,7 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
   
 - **Autenticação e Autorização**: Autenticação de usuários (clientes e restaurantes) e autorização para acesso às funcionalidades específicas.
 
-## Tecnologias Utilizadas
+## Tecnologias Utilizadas 🛠️
 
 - **Java 17**: Linguagem de programação utilizada para desenvolver a aplicação.
   
@@ -41,7 +41,7 @@ Este projeto é uma aplicação de delivery de comida desenvolvida em Java com o
 ![AWS Badge](https://img.shields.io/badge/AWS-232F3E.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![GitFlow Badge](https://img.shields.io/badge/GitFlow-000000.svg?style=for-the-badge&logo=git&logoColor=white)
 
-## Configuração do Ambiente de Desenvolvimento
+## Configuração do Ambiente de Desenvolvimento ⚙️
 
 1. **Pré-requisitos**:
    - JDK 17: Instale o Java Development Kit (JDK) versão 17.
